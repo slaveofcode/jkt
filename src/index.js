@@ -1,16 +1,14 @@
 "use strict";
 
-/**
- * # Initializer Part
- * 1. Split key-value
- * 2. Identify & validate value type (native, class, function)
- * 3. Store the schema / options
- *
- * # Utility Part
- * 1. Extends
- * 2. Validate & Value Conversion
- * 3. Parser (from outside to inside)
- * 4. Serializer (from inside to outside)
- */
+const Splitter = require("./splitter");
+const utils = require("./utils");
 
-const splitter = (strings, bindings) => {};
+const splitter = Splitter();
+
+const jkt = (strings, ...bindings) => {
+  const schema = splitter(strings, bindings);
+  const obj = Object.assign({}, schema, { util: utils.makeUtils(schema) });
+  return obj;
+};
+
+module.exports = jkt;
