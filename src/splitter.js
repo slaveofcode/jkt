@@ -10,6 +10,13 @@ const {
   OBJECT
 } = require(`./datatypes`);
 
+const deepClone = (cln, obj) => {
+  for (const i in obj)
+    cln[i] =
+      typeof obj[i] == "object" ? x(obj[i].constructor(), obj[i]) : obj[i];
+  return cln;
+};
+
 const splitter = (strict = false) => {
   return (strings, ...bindings) => {
     const pairs = {};
@@ -22,7 +29,12 @@ const splitter = (strict = false) => {
 
       splitLines.forEach(block => {
         const [key, val] = block.split(":");
-        pairs[key] = val.length > 0 ? val : bindings[bindIdx];
+        pairs[key] =
+          val.length > 0
+            ? val
+            : typeof bindings[bindIdx] !== "undefined"
+              ? deepClone(bindings[bindIdx])
+              : bindings[bindIdx];
         if (val.length === 0) bindIdx++;
       });
     });

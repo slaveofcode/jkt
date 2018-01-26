@@ -79,7 +79,7 @@ describe("Splitter for key-value string based on string literal", () => {
   it("should be able to splitting for function types", () => {
     const splitter = Splitter();
 
-    const fn = () => "some function";
+    let fn = () => "some function";
 
     const struct = splitter`
       name: String
@@ -97,5 +97,29 @@ describe("Splitter for key-value string based on string literal", () => {
       expect(val).to.equal(comparator[key]);
     }
   });
-  it("should be able to splitting for static value");
+  it("should be able to splitting for static value", () => {
+    const splitter = Splitter();
+
+    const name = "Aditya Kresna";
+    const addr = "Bekasi";
+    const grad = 2014;
+
+    const struct = splitter`
+      name: ${name}
+      age: Number
+      address: ${addr}
+      graduationYear: ${grad} 
+    `;
+
+    const comparator = {
+      name: "Aditya Kresna",
+      age: types.NUMBER,
+      address: addr,
+      graduationYear: grad
+    };
+
+    for (const [key, val] of Object.entries(struct)) {
+      expect(val).to.equal(comparator[key]);
+    }
+  });
 });
