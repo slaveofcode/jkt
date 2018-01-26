@@ -2,6 +2,7 @@
 
 const chai = require("chai");
 const Splitter = require(`${src}/splitter`);
+const types = require(`${src}/datatypes`);
 
 const expect = chai.expect;
 
@@ -9,7 +10,7 @@ describe("Splitter for key-value string based on string literal", () => {
   it("should be able to splitting for built-in types", () => {
     const splitter = Splitter();
 
-    const struct = `
+    const struct = splitter`
       name: String
       email: String
       phone: String
@@ -22,20 +23,18 @@ describe("Splitter for key-value string based on string literal", () => {
     `;
 
     const comparator = {
-      name: "String",
-      email: "String",
-      phone: "String",
-      age: "Number",
-      birthday: "Date",
-      isMarried: "Boolean",
-      gift: "Object",
-      hobby: "Array",
-      skills: "Function"
+      name: types.STRING,
+      email: types.STRING,
+      phone: types.STRING,
+      age: types.NUMBER,
+      birthday: types.DATE,
+      isMarried: types.BOOLEAN,
+      gift: types.OBJECT,
+      hobby: types.ARRAY,
+      skills: types.FUNCTION
     };
 
-    const result = splitter(struct);
-
-    for (const [key, val] of Object.entries(result)) {
+    for (const [key, val] of Object.entries(struct)) {
       expect(val).to.equal(comparator[key]);
     }
   });
