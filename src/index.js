@@ -6,21 +6,21 @@ const utils = require("./utils");
 const splitter = Splitter();
 
 const inst = (schema, utils) => {
-  return vals => {
-    // if args is single object do the parsing and rest
-    // if args is array do inheritance
-    utils.ext(strings, bindings);
-    // parse
-    // return instance
-    return {};
+  return (...vals) => {
+    if (vals.length > 1) return utils.ext(vals);
+    const parsed = utils.parse(vals);
+    return {
+      ...parsed,
+      toJSON: () => utils.serialize(parsed),
+      toString: () => JSON.stringify(utils.serialize(parsed))
+    };
   };
 };
 
 const jkt = (strings, ...bindings) => {
   // do validations of reserved words like toJSON, toString
   const schema = splitter(strings, bindings);
-  const utils = utils.makeUtils(schema);
-  return inst(schema, utils);
+  return inst(schema, utils.makeUtils(schema));
 };
 
 module.exports = jkt;
