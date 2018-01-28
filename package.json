@@ -5,9 +5,9 @@
   "main": "./src/index.js",
   "scripts": {
     "test":
-      "NODE_ENV=test mocha --require global_var.js --timeout 15000 --recursive --slow 1 test/",
+      "NODE_ENV=test mocha --require vars.js --timeout 15000 --recursive --slow 1 test/",
     "test:watch":
-      "NODE_ENV=test mocha --watch --require global_var.js --timeout 15000 --recursive --slow 1 test/"
+      "NODE_ENV=test mocha --watch --require vars.js --timeout 15000 --recursive --slow 1 test/"
   },
   "repository": {
     "type": "git",
