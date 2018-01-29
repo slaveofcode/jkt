@@ -7,13 +7,18 @@ const splitter = Splitter();
 
 const inst = (schema, utils) => {
   return (...vals) => {
-    if (vals.length > 1) return utils.ext(vals);
-    const parsed = utils.parse(vals);
-    return {
-      ...parsed,
-      toJSON: () => utils.serialize(parsed),
-      toString: () => JSON.stringify(utils.serialize(parsed))
-    };
+    if (utils.detect.isObject(vals[0])) {
+      const parsed = utils.parse(vals);
+      return {
+        ...parsed,
+        schema,
+        toJSON: () => utils.serialize(parsed),
+        toString: () => JSON.stringify(utils.serialize(parsed))
+      };
+    } else {
+      // do validations of reserved words like toJSON, toString
+      return utils.ext(...vals)
+    }
   };
 };
 
