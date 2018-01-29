@@ -1,16 +1,16 @@
 "use strict";
 
-const Splitter = require("../splitter");
+const Splitter = require("./splitter");
 const {
   hasReservedKeys,
   triggerErrorReservedKeys
 } = require("./reserved_keys");
 
-const extendUtil = (baseSchema, strict) => {
+const extendBuilder = (baseSchema, strict) => {
   const splitter = Splitter(strict);
   return (childStrings, ...childBindings) => {
-    const makeUtils = require("./make");
-    const { Inst } = require("../index");
+    const { makeUtils } = require("./utils");
+    const { Inst } = require("./index");
     const childSchema = splitter(childStrings, childBindings);
     const newSchema = { ...baseSchema, ...childSchema };
 
@@ -20,4 +20,4 @@ const extendUtil = (baseSchema, strict) => {
   };
 };
 
-module.exports = extendUtil;
+module.exports = extendBuilder;

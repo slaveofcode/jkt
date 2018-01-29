@@ -1,11 +1,12 @@
 "use strict";
 
+const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
 const {
   hasReservedKeys,
   triggerErrorReservedKeys
-} = require("./utils/reserved_keys");
+} = require("./reserved_keys");
 
 const splitter = Splitter();
 
@@ -21,7 +22,7 @@ const inst = (schema, utils) => {
         toString: () => JSON.stringify(utils.serialize(parsed))
       };
     } else {
-      return utils.ext(...vals);
+      return extendBuilder(schema)(...vals);
     }
   };
 };
