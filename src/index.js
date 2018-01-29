@@ -16,8 +16,8 @@ const inst = (schema, utils) => {
       const parsed = utils.parse(vals);
       return {
         ...parsed,
-        getSchema: () => schema,
         j: () => utils.serialize(parsed),
+        getSchema: () => schema,
         toJSON: () => utils.serialize(parsed),
         toString: () => JSON.stringify(utils.serialize(parsed))
       };
