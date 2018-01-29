@@ -13,7 +13,7 @@ const splitter = Splitter();
 const inst = (schema, utils) => {
   return (...vals) => {
     if (utils.detect.isObject(vals[0])) {
-      const parsed = utils.parse(vals);
+      const parsed = utils.parse(vals[0]);
       return {
         ...parsed,
         j: () => utils.serialize(parsed),
@@ -28,7 +28,6 @@ const inst = (schema, utils) => {
 };
 
 const jkt = (strings, ...bindings) => {
-  // do validations of reserved words like toJSON, toString, getSchema
   const schema = splitter(strings, bindings);
   if (hasReservedKeys(schema)) triggerErrorReservedKeys();
   return inst(schema, utils.makeUtils(schema));

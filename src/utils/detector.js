@@ -23,6 +23,9 @@ const isBoolean = comparator(BOOL_V);
 const isNull = comparator(NULL_V);
 const isDate = comparator(DATE_V);
 const isUndefined = comparator(UNDEF_V);
+const isInt = num => Number(num) === num && num % 1 === 0;
+const isFloat = num => Number(num) === num && num % 1 !== 0;
+const isStringFloat = num => !isNaN(num) && num.toString().indexOf(".") != -1;
 
 module.exports = {
   isArray,
@@ -33,5 +36,8 @@ module.exports = {
   isBoolean,
   isNull,
   isDate,
-  isUndefined
+  isUndefined,
+  isInt,
+  isFloat,
+  isStringFloat
 };
