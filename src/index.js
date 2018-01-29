@@ -2,6 +2,10 @@
 
 const Splitter = require("./splitter");
 const utils = require("./utils");
+const {
+  hasReservedKeys,
+  triggerErrorReservedKeys
+} = require("./utils/reserved_keys");
 
 const splitter = Splitter();
 
@@ -12,12 +16,12 @@ const inst = (schema, utils) => {
       return {
         ...parsed,
         getSchema: () => schema,
+        j: () => utils.serialize(parsed),
         toJSON: () => utils.serialize(parsed),
         toString: () => JSON.stringify(utils.serialize(parsed))
       };
     } else {
-      // do validations of reserved words like toJSON, toString, getSchema
-      return utils.ext(...vals)
+      return utils.ext(...vals);
     }
   };
 };
@@ -25,6 +29,7 @@ const inst = (schema, utils) => {
 const jkt = (strings, ...bindings) => {
   // do validations of reserved words like toJSON, toString, getSchema
   const schema = splitter(strings, bindings);
+  if (hasReservedKeys(schema)) triggerErrorReservedKeys();
   return inst(schema, utils.makeUtils(schema));
 };
 

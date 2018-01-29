@@ -22,9 +22,7 @@ const splitter = (strict = false) => {
     const pairs = {};
     let bindIdx = 0;
 
-    
     strings.forEach(stmt => {
-      console.log(stmt)
       // Place a new line marker and Removing all spaces
       const cleaned = stmt.replace(/\r?\n|\r/g, "|").replace(/\s/g, "");
       const splitLines = cleaned.split("|").filter(itm => itm.length > 0);
