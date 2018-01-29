@@ -11,19 +11,19 @@ const inst = (schema, utils) => {
       const parsed = utils.parse(vals);
       return {
         ...parsed,
-        schema,
+        getSchema: () => schema,
         toJSON: () => utils.serialize(parsed),
         toString: () => JSON.stringify(utils.serialize(parsed))
       };
     } else {
-      // do validations of reserved words like toJSON, toString
+      // do validations of reserved words like toJSON, toString, getSchema
       return utils.ext(...vals)
     }
   };
 };
 
 const jkt = (strings, ...bindings) => {
-  // do validations of reserved words like toJSON, toString
+  // do validations of reserved words like toJSON, toString, getSchema
   const schema = splitter(strings, bindings);
   return inst(schema, utils.makeUtils(schema));
 };
