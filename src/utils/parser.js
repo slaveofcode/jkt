@@ -46,6 +46,8 @@ const isPredefinedTypes = valueType =>
   detector.isArray(valueType) ||
   detector.isObject(valueType) ||
   detector.isBoolean(valueType) ||
+  detector.isDate(valueType) ||
+  detector.isError(valueType) ||
   detector.isNull(valueType) ||
   detector.isNumber(valueType) ||
   detector.isString(valueType);
