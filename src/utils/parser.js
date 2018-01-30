@@ -41,6 +41,15 @@ const parser = {
   [ANY]: val => val
 };
 
+const isPredefinedTypes = valueType =>
+  detector.isFunction(valueType) ||
+  detector.isArray(valueType) ||
+  detector.isObject(valueType) ||
+  detector.isBoolean(valueType) ||
+  detector.isNull(valueType) ||
+  detector.isNumber(valueType) ||
+  detector.isString(valueType);
+
 const parse = baseSchema => {
   return valuesToParse => {
     const parsedValues = {};
@@ -51,6 +60,8 @@ const parse = baseSchema => {
         parsedValues[key] = listedOnTypes(valueType)
           ? parser[valueType](value)
           : value;
+      else if (!listedOnTypes(valueType) && isPredefinedTypes(valueType))
+        parsedValues[key] = valueType;
     });
     return parsedValues;
   };

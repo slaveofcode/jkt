@@ -1,11 +1,13 @@
 "use strict";
 
-const { isUndefined } = require("./utils/detector");
+const { isUndefined, isArray } = require("./utils/detector");
 
 const deepClone = (cln, obj) => {
   for (const i in obj)
     cln[i] =
-      typeof obj[i] == "object" ? x(obj[i].constructor(), obj[i]) : obj[i];
+      typeof obj[i] == "object"
+        ? deepClone(obj[i].constructor(), obj[i])
+        : obj[i];
   return cln;
 };
 
@@ -17,20 +19,27 @@ const splitter = (strict = false) => {
     if (isUndefined(strings))
       throw new Error("You need to supply argument to parse!");
 
+    if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
     strings.forEach(stmt => {
       // Place a new line marker and Removing all spaces
       const cleaned = stmt.replace(/\r?\n|\r/g, "|").replace(/\s/g, "");
       const splitLines = cleaned.split("|").filter(itm => itm.length > 0);
 
       splitLines.forEach(block => {
-        const [key, val] = block.split(":");
+        const [key, typeName] = block.split(":");
         pairs[key] =
-          val.length > 0
-            ? val
-            : typeof bindings[bindIdx] !== "undefined"
+          typeName.length > 0
+            ? typeName
+            : !isUndefined(bindings[bindIdx])
               ? deepClone(bindings[bindIdx])
               : bindings[bindIdx];
-        if (val.length === 0) bindIdx++;
+
+        // normalize array binding values
+        console.log(key, pairs[key], bindIdx);
+        if (isArray(pairs[key]) && pairs[key].length > 0)
+          pairs[key] = pairs[key][0];
+
+        if (typeName.length === 0) bindIdx++;
       });
     });
 
