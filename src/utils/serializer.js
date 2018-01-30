@@ -22,7 +22,14 @@ const serializer = {
   [BOOLEAN]: val => val
 };
 
-const purifier = obj => JSON.parse(JSON.stringify(obj));
+const purified = obj => {
+  try {
+    const parsed = JSON.parse(JSON.stringify(obj));
+    return parsed;
+  } catch (err) {
+    return undefined;
+  }
+};
 
 const serialize = baseSchema => {
   return parsedValues => {
@@ -31,9 +38,13 @@ const serialize = baseSchema => {
       const valueType = baseSchema[key];
       const value = parsedValues[key];
       if (!detector.isUndefined(value))
-        serializedValues[key] = isSafeToRelease(valueType)
-          ? serializer(valueType)(value)
-          : purifier(value);
+        if (isSafeToRelease(valueType)) {
+          serializedValues[key] = serializer[valueType](value);
+        } else {
+          const purifiedVal = purified(value);
+          if (!detector.isUndefined(purifiedVal))
+            serializedValues[key] = purifiedVal;
+        }
     });
     return serializedValues;
   };
