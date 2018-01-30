@@ -7,6 +7,12 @@ const BOOLEAN = "Boolean";
 const OBJECT = "Object";
 const ARRAY = "Array";
 const FUNCTION = "Function";
+const ANY = "Any";
+
+const listedOnTypes = typeName =>
+  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY].includes(
+    typeName
+  );
 
 module.exports = {
   STRING,
@@ -15,5 +21,7 @@ module.exports = {
   BOOLEAN,
   OBJECT,
   ARRAY,
-  FUNCTION
+  FUNCTION,
+  ANY,
+  listedOnTypes
 };

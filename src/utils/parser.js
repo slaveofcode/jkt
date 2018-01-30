@@ -8,7 +8,9 @@ const {
   DATE,
   FUNCTION,
   NUMBER,
-  OBJECT
+  OBJECT,
+  ANY,
+  listedOnTypes
 } = require("../datatypes");
 
 const parser = {
@@ -35,11 +37,9 @@ const parser = {
     }
     return null;
   },
-  [OBJECT]: val => (detector.isObject ? val : null)
+  [OBJECT]: val => (detector.isObject ? val : null),
+  [ANY]: val => val
 };
-
-const listedOnTypes = typeName =>
-  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT].includes(typeName);
 
 const parse = baseSchema => {
   return valuesToParse => {
@@ -47,9 +47,10 @@ const parse = baseSchema => {
     Object.keys(baseSchema).forEach(key => {
       const valueType = baseSchema[key];
       const value = valuesToParse[key];
-      parsedValues[key] = listedOnTypes(valueType)
-        ? parser[valueType](value)
-        : value;
+      if (!detector.isUndefined(value))
+        parsedValues[key] = listedOnTypes(valueType)
+          ? parser[valueType](value)
+          : value;
     });
     return parsedValues;
   };

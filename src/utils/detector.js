@@ -9,6 +9,8 @@ const BOOL_V = "[object Boolean]";
 const NULL_V = "[object Null]";
 const DATE_V = "[object Date]";
 const UNDEF_V = "[object Undefined]";
+const ERROR_V = "[object Error]";
+const SYMBOL_V = "[object Symbol]";
 
 const comparator = comp => {
   return obj => Object.prototype.toString.call(obj) === comp;
@@ -23,6 +25,8 @@ const isBoolean = comparator(BOOL_V);
 const isNull = comparator(NULL_V);
 const isDate = comparator(DATE_V);
 const isUndefined = comparator(UNDEF_V);
+const isError = comparator(ERROR_V);
+const isSymbol = comparator(SYMBOL_V);
 const isInt = num => Number(num) === num && num % 1 === 0;
 const isFloat = num => Number(num) === num && num % 1 !== 0;
 const isStringFloat = num => !isNaN(num) && num.toString().indexOf(".") != -1;
@@ -37,6 +41,8 @@ module.exports = {
   isNull,
   isDate,
   isUndefined,
+  isError,
+  isSymbol,
   isInt,
   isFloat,
   isStringFloat

@@ -7,7 +7,7 @@ const detector = require("./detector");
 const makeUtils = schema => {
   return {
     parse: parserUtil(schema),
-    serialize: serializerUtil(),
+    serialize: serializerUtil(schema),
     detect: detector
   };
 };

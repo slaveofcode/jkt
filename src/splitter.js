@@ -1,14 +1,6 @@
 "use strict";
 
-const {
-  STRING,
-  ARRAY,
-  BOOLEAN,
-  DATE,
-  FUNCTION,
-  NUMBER,
-  OBJECT
-} = require(`./datatypes`);
+const { isUndefined } = require("./utils/detector");
 
 const deepClone = (cln, obj) => {
   for (const i in obj)
@@ -21,6 +13,9 @@ const splitter = (strict = false) => {
   return (strings, ...bindings) => {
     const pairs = {};
     let bindIdx = 0;
+
+    if (isUndefined(strings))
+      throw new Error("You need to supply argument to parse!");
 
     strings.forEach(stmt => {
       // Place a new line marker and Removing all spaces
