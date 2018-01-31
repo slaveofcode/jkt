@@ -26,6 +26,9 @@ const inst = (schema, utils) => {
     }
   };
 
+  // Checking enum type
+  
+
   return struct
 };
 
