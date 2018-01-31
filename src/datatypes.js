@@ -8,9 +8,10 @@ const OBJECT = "Object";
 const ARRAY = "Array";
 const FUNCTION = "Function";
 const ANY = "Any";
+const ENUM = 'ENUM'
 
 const listedOnTypes = typeName =>
-  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY].includes(
+  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY, ENUM].includes(
     typeName
   );
 
@@ -23,5 +24,6 @@ module.exports = {
   ARRAY,
   FUNCTION,
   ANY,
+  ENUM,
   listedOnTypes
 };
