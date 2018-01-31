@@ -35,7 +35,6 @@ const splitter = (strict = false) => {
               : bindings[bindIdx];
 
         // normalize array binding values
-        console.log(key, pairs[key], bindIdx);
         if (isArray(pairs[key]) && pairs[key].length > 0)
           pairs[key] = pairs[key][0];
 
