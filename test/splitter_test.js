@@ -111,6 +111,8 @@ describe("Splitter for key-value string based on string literal", () => {
       graduationYear: ${grad} 
     `;
 
+    console.log(struct)
+
     const comparator = {
       name: "Aditya Kresna",
       age: types.NUMBER,
