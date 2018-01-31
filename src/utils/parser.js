@@ -10,7 +10,7 @@ const {
   NUMBER,
   OBJECT,
   ANY,
-  listedOnTypes
+  parserableTypes
 } = require("../datatypes");
 
 const parser = {
@@ -59,10 +59,10 @@ const parse = baseSchema => {
       const valueType = baseSchema[key];
       const value = valuesToParse[key];
       if (!detector.isUndefined(value))
-        parsedValues[key] = listedOnTypes(valueType)
+        parsedValues[key] = parserableTypes(valueType)
           ? parser[valueType](value)
           : value;
-      else if (!listedOnTypes(valueType) && isPredefinedTypes(valueType))
+      else if (!parserableTypes(valueType) && isPredefinedTypes(valueType))
         parsedValues[key] = valueType;
     });
     return parsedValues;
