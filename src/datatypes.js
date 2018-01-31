@@ -10,14 +10,16 @@ const FUNCTION = "Function";
 const ANY = "Any";
 const ENUM = 'ENUM'
 
+
 const parserableTypes = typeName =>
   [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY].includes(
     typeName
   );
 
-const isEnum = value => {
+const isEnum = value => 
   /ENUM\[(((\s*([A-Z]+)\s*):?(\s*([A-Za-z0-9\s]+)\s*)?)\s*,*\s*)+]/g.test(value)
-};
+
+const isDeleteProperty = value => /\s*\!DELETE\s*/g.test(value)
 
 module.exports = {
   STRING,
@@ -30,5 +32,6 @@ module.exports = {
   ANY,
   ENUM,
   parserableTypes,
-  isEnum
+  isEnum,
+  isDeleteProperty
 };
