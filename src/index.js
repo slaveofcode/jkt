@@ -11,7 +11,7 @@ const {
 const splitter = Splitter();
 
 const inst = (schema, utils) => {
-  return (...vals) => {
+  const struct = function (...vals) {
     if (utils.detect.isObject(vals[0])) {
       const parsed = utils.parse(vals[0]);
       return {
@@ -25,6 +25,8 @@ const inst = (schema, utils) => {
       return extendBuilder(schema)(...vals);
     }
   };
+
+  return struct
 };
 
 const jkt = (strings, ...bindings) => {
