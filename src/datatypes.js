@@ -24,7 +24,7 @@ const parserableTypes = typeName =>
   )
 
 const isEnum = value =>
-  /ENUM\[(((\s*([A-Z]+)\s*):?(\s*([A-Za-z0-9\s]+)\s*)?)\s*,*\s*)+]/g.test(value)
+  /ENUM\[(((\s*([A-Za-z0-9\_]+)\s*)\:?(\s*([A-Za-z0-9\s]+)\s*)?)\s*\,*\s*)+\]/g.test(value)
 
 const isSafeEnumValue = val => isString(val) || isNumber(val)
 
@@ -51,9 +51,6 @@ const makeEnum = enumSchema => {
       enums[keyUnderscored] = keyUnderscored
     }
   })
-
-  console.log(enumSchema, enums)
-
   return enums
 }
 
