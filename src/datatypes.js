@@ -15,6 +15,10 @@ const parserableTypes = typeName =>
     typeName
   );
 
+const isEnum = value => {
+  /ENUM\[(((\s*([A-Z]+)\s*):?(\s*([A-Za-z0-9\s]+)\s*)?)\s*,*\s*)+]/g.test(value)
+};
+
 module.exports = {
   STRING,
   NUMBER,
@@ -25,5 +29,6 @@ module.exports = {
   FUNCTION,
   ANY,
   ENUM,
-  parserableTypes
+  parserableTypes,
+  isEnum
 };
