@@ -34,9 +34,10 @@ const inst = (schema, utils) => {
   };
 
   Object.keys(cleanSchema).forEach(key => {
-    if (isEnum(schema[key])) {
-      const enums = makeEnum(schema[key])
-      Object.keys(enums).forEach(propEnum => struct[propEnum] = enums[propEnum])
+    if (isEnum(cleanSchema[key])) {
+      const enums = makeEnum(cleanSchema[key])
+      if (Object.keys(enums) > 0)
+        struct[key] = enums
     }
   })
 
