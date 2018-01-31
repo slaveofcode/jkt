@@ -3,7 +3,7 @@
 const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
-const { isEnum, makeEnum, isDeleteProperty } = require('./datatypes')
+const { isEnum, makeEnum, isDeleteProperty } = require("./datatypes");
 const {
   hasReservedKeys,
   triggerErrorReservedKeys
@@ -12,13 +12,14 @@ const {
 const splitter = Splitter();
 
 const inst = (schema, utils) => {
-  const cleanSchema = {}
+  const cleanSchema = {};
 
+  console.log(schema);
   Object.keys(schema).forEach(key => {
-    if (!isDeleteProperty(schema[key])) cleanSchema[key] = schema[key]
-  })
+    if (!isDeleteProperty(schema[key])) cleanSchema[key] = schema[key];
+  });
 
-  const struct = function (...vals) {
+  const struct = function(...vals) {
     if (utils.detect.isObject(vals[0])) {
       const parsed = utils.parse(vals[0]);
       return {
@@ -34,18 +35,19 @@ const inst = (schema, utils) => {
   };
 
   Object.keys(cleanSchema).forEach(key => {
+    console.log(isEnum(cleanSchema[key]));
+    console.log(cleanSchema[key]);
     if (isEnum(cleanSchema[key])) {
-      const enums = makeEnum(cleanSchema[key])
-      if (Object.keys(enums).length > 0)
-        struct[key] = enums
+      const enums = makeEnum(cleanSchema[key]);
+      if (Object.keys(enums).length > 0) struct[key] = enums;
     }
-  })
+  });
 
   // builtin properties
-  struct.isJKT = true
-  struct.schema = cleanSchema
+  struct.isJKT = true;
+  struct.schema = cleanSchema;
 
-  return struct
+  return struct;
 };
 
 const jkt = (strings, ...bindings) => {
