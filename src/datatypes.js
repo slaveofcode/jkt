@@ -10,8 +10,8 @@ const FUNCTION = "Function";
 const ANY = "Any";
 const ENUM = 'ENUM'
 
-const listedOnTypes = typeName =>
-  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY, ENUM].includes(
+const parserableTypes = typeName =>
+  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY].includes(
     typeName
   );
 
@@ -25,5 +25,5 @@ module.exports = {
   FUNCTION,
   ANY,
   ENUM,
-  listedOnTypes
+  parserableTypes
 };
