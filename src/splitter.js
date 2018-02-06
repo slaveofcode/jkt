@@ -20,26 +20,36 @@ const splitter = (strict = false) => {
       throw new Error("You need to supply argument to parse!");
 
     if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
-    strings.forEach(stmt => {
-      // Place a new line marker and Removing all spaces
-      const cleaned = stmt.replace(/\r?\n|\r/g, "|").replace(/\s/g, "");
-      const splitLines = cleaned.split("|").filter(itm => itm.length > 0);
+    strings.filter(s => s.length > 0)
+      .forEach(stmt => {
 
-      splitLines.forEach(block => {
-        const [key, typeName] = block.split(":");
-        pairs[key] =
-          typeName.length > 0
-            ? typeName
-            : !isUndefined(bindings[bindIdx])
-              ? deepClone(bindings[bindIdx])
-              : bindings[bindIdx];
+        const delimiter = ','
 
-        // normalize array binding values
-        if (isArray(pairs[key]) && pairs[key].length > 0)
-          pairs[key] = pairs[key][0];
+        // Replacing all new lines with comma
+        const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter)
 
-        if (typeName.length === 0) bindIdx++;
-      });
+        const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[a-zA-Z0-9\s\w\.\_]*\s*\,*[\r\n]*)/g
+        const splittedStr = preparedStr.split(rex)
+
+      
+        const removedTrailSpcs = splittedStr.map(s => s.replace(/\,/g, '').trim())
+        const cleanedBlocks = removedTrailSpcs.filter(s => s.length > 0 && s !== delimiter)
+
+        cleanedBlocks.forEach(block => {
+          const [key, typeName] = block.split(":");
+          pairs[key] =
+            typeName.length > 0
+              ? typeName.trim()
+              : !isUndefined(bindings[bindIdx])
+                ? deepClone(bindings[bindIdx])
+                : bindings[bindIdx];
+
+          // normalize array binding values
+          if (isArray(pairs[key]) && pairs[key].length > 0)
+            pairs[key] = pairs[key][0];
+
+          if (typeName.length === 0) bindIdx++;
+        });
     });
 
     const pairVals = Object.values(pairs);
