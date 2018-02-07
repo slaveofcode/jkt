@@ -14,7 +14,6 @@ const splitter = Splitter();
 const inst = (schema, utils) => {
   const cleanSchema = {};
 
-  console.log(schema);
   Object.keys(schema).forEach(key => {
     if (!isDeleteProperty(schema[key])) cleanSchema[key] = schema[key];
   });
@@ -34,14 +33,12 @@ const inst = (schema, utils) => {
     }
   };
 
-  Object.keys(cleanSchema).forEach(key => {
-    console.log(isEnum(cleanSchema[key]));
-    console.log(cleanSchema[key]);
-    if (isEnum(cleanSchema[key])) {
-      const enums = makeEnum(cleanSchema[key]);
-      if (Object.keys(enums).length > 0) struct[key] = enums;
-    }
-  });
+  // Object.keys(cleanSchema).forEach(key => {
+  //   if (isEnum(cleanSchema[key])) {
+  //     const enums = makeEnum(cleanSchema[key]);
+  //     if (Object.keys(enums).length > 0) struct[key] = enums;
+  //   }
+  // });
 
   // builtin properties
   struct.isJKT = true;

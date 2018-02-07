@@ -16,40 +16,42 @@ const splitter = (strict = false) => {
     const pairs = {};
     let bindIdx = 0;
 
-    if (isUndefined(strings))
-      throw new Error("You need to supply argument to parse!");
+    if (isUndefined(strings)) throw new Error("You need to supply argument");
 
     if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
-    strings.filter(s => s.length > 0)
-      .forEach(stmt => {
 
-        const delimiter = ','
+    strings.filter(s => s.length > 0).forEach(stmt => {
+      const delimiter = ",";
 
-        // Replacing all new lines with comma
-        const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter)
+      // Replacing all new lines with comma
+      const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter);
 
-        const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[a-zA-Z0-9\s\w\.\_]*\s*\,*[\r\n]*)/g
-        const splittedStr = preparedStr.split(rex)
+      const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
+      const splittedStr = preparedStr.split(rex);
 
-      
-        const removedTrailSpcs = splittedStr.map(s => s.replace(/\,/g, '').trim())
-        const cleanedBlocks = removedTrailSpcs.filter(s => s.length > 0 && s !== delimiter)
+      const removedTrailSpcs = splittedStr.map(s =>
+        s.replace(/\,/g, "").trim()
+      );
 
-        cleanedBlocks.forEach(block => {
-          const [key, typeName] = block.split(":");
-          pairs[key] =
-            typeName.length > 0
-              ? typeName.trim()
-              : !isUndefined(bindings[bindIdx])
-                ? deepClone(bindings[bindIdx])
-                : bindings[bindIdx];
+      const cleanedBlocks = removedTrailSpcs.filter(
+        s => s.length > 0 && s !== delimiter
+      );
 
-          // normalize array binding values
-          if (isArray(pairs[key]) && pairs[key].length > 0)
-            pairs[key] = pairs[key][0];
+      cleanedBlocks.forEach(block => {
+        const [key, typeName] = block.split(":");
+        pairs[key] =
+          typeName.length > 0
+            ? typeName.trim()
+            : !isUndefined(bindings[bindIdx])
+              ? deepClone(bindings[bindIdx])
+              : bindings[bindIdx];
 
-          if (typeName.length === 0) bindIdx++;
-        });
+        // normalize array binding values
+        if (isArray(pairs[key]) && pairs[key].length > 0)
+          pairs[key] = pairs[key][0];
+
+        if (typeName.length === 0) bindIdx++;
+      });
     });
 
     const pairVals = Object.values(pairs);
@@ -59,7 +61,7 @@ const splitter = (strict = false) => {
 
     if (countUndefTypes > 0 && strict)
       throw new Error(
-        "Invalid Schema Detected, please define right value types"
+        "Invalid Schema Detected, please define the right value types"
       );
 
     return pairs;
