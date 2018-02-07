@@ -55,3 +55,59 @@ const jkt = (strings, ...bindings) => {
 
 module.exports = jkt;
 module.exports.Inst = inst;
+module.exports.ENUM = "";
+
+/**
+ * const { ENUM } = require('jkt')
+ * const jkt = require('jkt')
+ *
+ * const Colors = ENUM`
+ *  RED: Merah
+ *  GREEN: Hijau
+ * `
+ *
+ * OR
+ *
+ * const Colors = ENUM`RED: Merah, GREEN: Hijau`
+ *
+ * OR
+ *
+ * const Colors = ENUM`RED, GREEN`
+ *
+ * OR
+ *
+ * const Colors = ENUM`
+ *  RED
+ *  GREEN
+ * `
+ *
+ * const fruit = jkt`
+ *  name: String!
+ *  price: Number!
+ *  color: String!
+ *  COLOR: ${Colors}
+ * `
+ *
+ * fruit.COLOR.RED // callable before instantiation
+ *
+ *
+ * const basket = jkt`
+ *  ownerName: String
+ *  orange: ${fruit}
+ *  apple: ${fruit}!
+ *  COLOR: ${Colors}
+ * `
+ *
+ * basket.COLOR.GREEN
+ *
+ * const basket1 = basket({
+ *  ownerName: 'Adit',
+ *  orange: {
+ *    name: 'orange',
+ *    price: '5000',
+ *    color: 'yellow'
+ *  }
+ * })
+ *
+ * basket1.orange.COLOR.RED
+ */
