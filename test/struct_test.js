@@ -9,6 +9,30 @@ chai.use(require("chai-things"));
 const expect = chai.expect;
 
 describe("Struct", () => {
+  it("should be able to create by multiple lines", () => {
+    const person = jkt`
+      name: String
+      age: Number
+      birthday: Date
+    `;
+
+    expect(person.isJKT).to.be.true;
+    expect(person.schema).to.deep.equal({
+      name: "String",
+      age: "Number",
+      birthday: "Date"
+    });
+  });
+  it("should be able to create by one liner", () => {
+    const person = jkt`name: String,age: Number, birthday: Date`;
+
+    expect(person.isJKT).to.be.true;
+    expect(person.schema).to.deep.equal({
+      name: "String",
+      age: "Number",
+      birthday: "Date"
+    });
+  });
   it("should be able to extend", () => {
     const person = jkt`
       name: String
@@ -19,32 +43,79 @@ describe("Struct", () => {
       hasFamily: Boolean
     `;
 
-    const schema = father({}).getSchema();
-    expect(schema).to.deep.equal({
+    const validSchema = {
       name: "String",
       age: "Number",
       hasFamily: "Boolean"
-    });
-  });
-  it("should be able to parse value with type ENUM", () => {
-    const shm1 = jkt`
-      carTypes: ENUM[SUV, SEDAN, SPORT, TRUCK]
-    `;
-    const shm2 = jkt`
-      color: ENUM[RED: Merah, GREEN: Hijau]
-    `;
-    expect(shm1.carTypes).to.deep.equal({
-      SUV: "SUV",
-      SEDAN: "SEDAN",
-      SPORT: "SPORT",
-      TRUCK: "TRUCK"
-    });
+    };
 
-    expect(shm2.carTypes).to.deep.equal({
-      RED: "Merah",
-      GREEN: "Hijau"
-    });
+    const schemaFromInst = father({}).getSchema();
+    const schemaFromStruct = father.schema;
+    expect(schemaFromInst).to.deep.equal(validSchema);
+    expect(schemaFromStruct).to.deep.equal(validSchema);
   });
+  it("should be able to remove property on extend", () => {
+    const person = jkt`
+      name: String
+      age: Number
+      birthday: Date
+    `;
+
+    const fruit = person`
+      age: !DELETE
+      birthday: !DELETE
+      color: String
+    `;
+
+    const validSchema = {
+      name: "String",
+      color: "String"
+    };
+
+    const schemaFromInst = fruit({}).getSchema();
+    expect(schemaFromInst).to.deep.equal(validSchema);
+    expect(fruit.schema).to.deep.equal(validSchema);
+  });
+  it.only("Should be able to create nested struct", () => {
+    const hobby = jkt`
+      name: String
+      cost: Number
+      outdoor: Boolean
+    `;
+
+    const person = jkt`
+      name: String
+      age: Number
+      hobby: ${hobby}
+    `;
+
+    const mother = jkt`
+      gender: String
+      beauty: Boolean
+      child: ${person}
+    `;
+
+    const validSchemaPerson = {
+      name: "String",
+      age: "Number",
+      hobby: {
+        name: "String",
+        cost: "Number",
+        outdoor: "Boolean"
+      }
+    };
+
+    const validSchemaMother = {
+      gender: "String",
+      beauty: "Boolean",
+      child: validSchemaPerson
+    };
+
+    expect(person.schema).to.deep.equal(validSchemaPerson);
+    expect(mother.schema).to.deep.equal(validSchemaMother);
+  });
+  it("should be able to create struct with enum", () => {});
+  it("should be able to parse value with enum", () => {});
   it("should be able to extend from existing struct", () => {});
   it("should be able to extend from existing struct with deleting parent property", () => {});
   it("should trigger error when using reserved words", () => {});

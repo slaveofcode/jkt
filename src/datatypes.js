@@ -87,7 +87,6 @@ module.exports = {
   ARRAY,
   FUNCTION,
   ANY,
-  ENUM,
   parserableTypes,
   isEnum,
   makeEnum,

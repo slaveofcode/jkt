@@ -8,14 +8,21 @@ const {
   hasReservedKeys,
   triggerErrorReservedKeys
 } = require("./reserved_keys");
+const { isJKTObject } = require("./utils/detector");
 
 const splitter = Splitter();
 
 const inst = (schema, utils) => {
-  const cleanSchema = {};
+  const cleanSchema = {}; // pure JSON schema
+  const dirtySchema = {}; // impure JSON schema including builtin jkt function
 
   Object.keys(schema).forEach(key => {
-    if (!isDeleteProperty(schema[key])) cleanSchema[key] = schema[key];
+    if (!isDeleteProperty(schema[key])) {
+      cleanSchema[key] = !isJKTObject(schema[key])
+        ? schema[key]
+        : schema[key].schema;
+      dirtySchema[key] = schema[key];
+    }
   });
 
   const struct = function(...vals) {
@@ -25,11 +32,12 @@ const inst = (schema, utils) => {
         ...parsed,
         j: () => utils.serialize(parsed),
         getSchema: () => cleanSchema,
+        getDirtySchema: () => dirtySchema,
         toJSON: () => utils.serialize(parsed),
         toString: () => JSON.stringify(utils.serialize(parsed))
       };
     } else {
-      return extendBuilder(cleanSchema)(...vals);
+      return extendBuilder(dirtySchema)(...vals);
     }
   };
 
@@ -43,6 +51,7 @@ const inst = (schema, utils) => {
   // builtin properties
   struct.isJKT = true;
   struct.schema = cleanSchema;
+  struct.__schema = dirtySchema;
 
   return struct;
 };
