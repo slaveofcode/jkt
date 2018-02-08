@@ -52,21 +52,25 @@ const isPredefinedTypes = valueType =>
   detector.isNumber(valueType) ||
   detector.isString(valueType);
 
-const parse = baseSchema => {
-  return valuesToParse => {
-    const parsedValues = {};
-    Object.keys(baseSchema).forEach(key => {
-      const valueType = baseSchema[key];
-      const value = valuesToParse[key];
-      if (!detector.isUndefined(value))
-        parsedValues[key] = parserableTypes(valueType)
-          ? parser[valueType](value)
+const valueParser = (schema, valuesToParse) => {
+  const parsedValues = {};
+  Object.keys(schema).forEach(key => {
+    const valueType = schema[key];
+    const value = valuesToParse[key];
+    if (!detector.isUndefined(value))
+      parsedValues[key] = parserableTypes(valueType)
+        ? parser[valueType](value)
+        : detector.isJKTObject(valueType)
+          ? valueParser(valueType.__schema, value)
           : value;
-      else if (!parserableTypes(valueType) && isPredefinedTypes(valueType))
-        parsedValues[key] = valueType;
-    });
-    return parsedValues;
-  };
+    else if (!parserableTypes(valueType) && isPredefinedTypes(valueType))
+      parsedValues[key] = valueType;
+  });
+  return parsedValues;
+};
+
+const parse = baseSchema => {
+  return valuesToParse => valueParser(baseSchema, valuesToParse);
 };
 
 module.exports = parse;
