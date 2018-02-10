@@ -40,39 +40,6 @@ const nonNullableTypes = typeName =>
     OBJECT_ONLY
   ].includes(typeName);
 
-const isEnum = value =>
-  /ENUM\[(((\s*([A-Za-z0-9\_]+)\s*)\:?(\s*([A-Za-z0-9\s]+)\s*)?)\s*\,*\s*)+\]/g.test(
-    value
-  );
-
-const isSafeEnumValue = val => isString(val) || isNumber(val);
-
-const makeEnum = enumSchema => {
-  const enums = {};
-  // cleaning ENUM[] char, leaving values separated by comma
-  const cleaned = enumSchema
-    .replace(/ENUM\[/g, "")
-    .replace(/\]/g, "")
-    .replace(/\r?\n|\r/g, " ");
-  const constList = cleaned.split(",");
-
-  constList.forEach(keyVal => {
-    const trimmed = keyVal.trim();
-    const [key, val] = trimmed.split(":");
-    const keyUnderscored = key.toUpperCase().replace(/\s/g, "_");
-    if (isSafeEnumValue(val)) {
-      // parse enum with provided value
-      enums[keyUnderscored] = !isNaN(val)
-        ? isStringFloat(val) ? parseFloat(val) : parseInt(val)
-        : val.length > 0 ? val : keyUnderscored;
-    } else {
-      // parse enum with value same as the key
-      enums[keyUnderscored] = keyUnderscored;
-    }
-  });
-  return enums;
-};
-
 const isDeleteProperty = value => /\s*\!DELETE\s*/g.test(value);
 
 module.exports = {
@@ -93,7 +60,5 @@ module.exports = {
   ANY,
   parserableTypes,
   nonNullableTypes,
-  isEnum,
-  makeEnum,
   isDeleteProperty
 };
