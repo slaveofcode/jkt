@@ -1,6 +1,6 @@
 "use strict";
 
-const { isUndefined, isArray } = require("./utils/detector");
+const { isUndefined, isArray, isString } = require("./utils/detector");
 
 const deepClone = (cln, obj) => {
   for (const i in obj)
@@ -11,25 +11,48 @@ const deepClone = (cln, obj) => {
   return cln;
 };
 
+const emptyValidator = values => {
+  if (isUndefined(values)) throw new Error("You need to define a schema");
+  if (values.length == 1) {
+    const s = values[0].replace(/(\s)/gm, "");
+    if (s.length === 0) throw new Error("You need to define a schema");
+  }
+};
+
+const RCTS = s => s.replace(/\,/g, "").trim();
+
+const removeCommaAndTrailingSpaces = values => values.map(RCTS);
+
 const splitter = (strict = false) => {
   return (strings, ...bindings) => {
+    emptyValidator(strings);
+
     const pairs = {};
     let bindIdx = 0;
 
-    if (isUndefined(strings))
-      throw new Error("You need to supply argument to parse!");
-
+    // spread value fix
     if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
-    strings.forEach(stmt => {
-      // Place a new line marker and Removing all spaces
-      const cleaned = stmt.replace(/\r?\n|\r/g, "|").replace(/\s/g, "");
-      const splitLines = cleaned.split("|").filter(itm => itm.length > 0);
 
-      splitLines.forEach(block => {
+    strings.filter(s => s.length > 0).forEach(stmt => {
+      const delimiter = ",";
+
+      // Replacing all new lines with comma
+      const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter);
+
+      const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
+      const splittedStr = preparedStr.split(rex);
+
+      const removedCommaTrailSpcs = removeCommaAndTrailingSpaces(splittedStr);
+
+      const cleanedBlocks = removedCommaTrailSpcs.filter(
+        s => s.length > 0 && s !== delimiter
+      );
+
+      cleanedBlocks.forEach(block => {
         const [key, typeName] = block.split(":");
         pairs[key] =
           typeName.length > 0
-            ? typeName
+            ? typeName.trim()
             : !isUndefined(bindings[bindIdx])
               ? deepClone(bindings[bindIdx])
               : bindings[bindIdx];
@@ -43,17 +66,79 @@ const splitter = (strict = false) => {
     });
 
     const pairVals = Object.values(pairs);
-    const countUndefTypes = pairVals.map(
+    const countUndefTypes = pairVals.filter(
       typeVal => typeof typeVal === "undefined"
     ).length;
 
     if (countUndefTypes > 0 && strict)
       throw new Error(
-        "Invalid Schema Detected, please define right value types"
+        "Invalid Schema Detected, please define the right value types"
       );
 
     return pairs;
   };
 };
 
+const enumSplitter = (strings, ...bindings) => {
+  emptyValidator(strings);
+
+  const pairs = {};
+  let bindIdx = 0;
+
+  // spread value fix
+  if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
+
+  // handle string argument
+  if (isString(strings)) strings = [strings];
+
+  strings.filter(s => s.length > 0).forEach(stmt => {
+    const delimiter = ",";
+
+    // Replacing all new lines with comma
+    const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter);
+
+    const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
+    const rexEnum = /\s*([a-zA-Z0-9\_]+)\s*\,*/g;
+    const splittedStr = preparedStr.split(rex);
+    const enumBlocks = [];
+
+    splittedStr.forEach(str => {
+      if (!rex.test(str)) {
+        // Parse enum without defined values
+        const splitted = str.split(rexEnum);
+        const removedCommaTrailSpcs = removeCommaAndTrailingSpaces(splitted);
+        const cleaned = removedCommaTrailSpcs.filter(s => s.length > 0);
+
+        if (cleaned.length > 0) enumBlocks.push(...cleaned);
+      } else {
+        // enum with defined values
+        enumBlocks.push(RCTS(str));
+      }
+    });
+
+    if (enumBlocks.length > 0) {
+      enumBlocks.forEach(block => {
+        const rexComma = /[a-zA-Z0-9\_]+\s*\:\s*[a-zA-Z0-9\_]+/g;
+        if (rexComma.test(block)) {
+          const keyValEnum = block.split(":");
+          pairs[RCTS(keyValEnum[0]).toUpperCase()] = RCTS(keyValEnum[1]);
+        } else {
+          const upperBlock = block.toUpperCase();
+          // Check predefined values to assign the custom value binding
+          if (/[a-zA-Z0-9\_]+\s*\:/g.test(block)) {
+            const keyEnum = upperBlock.replace(":", "");
+            pairs[keyEnum] = bindings[bindIdx];
+            bindIdx++;
+          } else {
+            pairs[upperBlock] = upperBlock;
+          }
+        }
+      });
+    }
+  });
+
+  return pairs;
+};
+
 module.exports = splitter;
+module.exports.enumSplitter = enumSplitter;

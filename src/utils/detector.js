@@ -30,6 +30,26 @@ const isSymbol = comparator(SYMBOL_V);
 const isInt = num => Number(num) === num && num % 1 === 0;
 const isFloat = num => Number(num) === num && num % 1 !== 0;
 const isStringFloat = num => !isNaN(num) && num.toString().indexOf(".") != -1;
+const isJKTObject = valueType => {
+  let isJKT = false;
+  let hasSchema = false;
+  if (Object(valueType).hasOwnProperty("isJKT")) isJKT = true;
+  if (Object(valueType).hasOwnProperty("schema") && isObject(valueType.schema))
+    hasSchema = true;
+
+  return isJKT && hasSchema;
+};
+const isENUMObject = valueType => {
+  let isENUM = false;
+  let hasToJsonFunc = false;
+  if (Object(valueType).hasOwnProperty("isJKTENUM")) isENUM = true;
+  if (
+    Object(valueType).hasOwnProperty("j") &&
+    Object(valueType).hasOwnProperty("toJSON")
+  )
+    hasToJsonFunc = true;
+  return isENUM && hasToJsonFunc;
+};
 
 module.exports = {
   isArray,
@@ -45,5 +65,7 @@ module.exports = {
   isSymbol,
   isInt,
   isFloat,
-  isStringFloat
+  isStringFloat,
+  isJKTObject,
+  isENUMObject
 };
