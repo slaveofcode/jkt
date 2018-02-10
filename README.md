@@ -43,7 +43,7 @@ Once you define the `person` structure, you could use it everywhere, make an ins
 
 ### Serializing
 
-The next feature is serializing, when you already have the instance of `person` (the `John`) sometimes it would be boring to checking and makes the values safely parsed into pure json, because you may returning it as a pure json or as a response API (for example). the example below show you how you get the fresh json data without touching it instead calling a function.
+The next feature is serializing, when you already have the instance of `person` (the `John`) sometimes it would be boring to checking and makes the values safely parsed into pure json, because you may returning it as a pure json or as a response API (for example). The example below show you how you get the fresh json data without checking and manipulating it instead calling a function.
 
 ```
 const John = person({
@@ -56,6 +56,24 @@ console.log(John.j()) // the shorthand
 ```
 
 ### One Liner VS Multi Liner
+
+There is a few method you can follow while making a struct, **One Line** and **Multi Line**. If you found it very short struct and don't wanna make a space with using multi lines, you could simply create a struct separated by `comma` like this
+
+```
+const Animal = jkt`type: String, color: String, isWild: Boolean`
+```
+
+or by multiple lines like this
+
+```
+const Animal = jkt`
+  type: String
+  color: String
+  isWild: Boolean
+`
+```
+
+By using spaces, new line and tabs you don't have to worry about the results. Those two example are valid to use.
 
 ### Custom Predefined Value
 
