@@ -1,6 +1,13 @@
 "use strict";
 
-const RESERVED_KEYS = ["getSchema", "j", "toJSON", "toString"];
+const RESERVED_KEYS = [
+  "getSchema",
+  "j",
+  "toJSON",
+  "toString",
+  "getDirtySchema",
+  "instanceOf"
+];
 
 const hasReservedKeys = obj => {
   return Object.keys(obj).filter(key => RESERVED_KEYS.includes(key)).length > 0;
@@ -15,6 +22,7 @@ const triggerErrorReservedKeys = () => {
 };
 
 module.exports = {
+  RESERVED_KEYS,
   hasReservedKeys,
   triggerErrorReservedKeys
 };
