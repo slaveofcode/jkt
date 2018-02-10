@@ -454,28 +454,39 @@ describe("Struct", () => {
       birth: "1991-06-33"
     });
 
-    console.log(child);
+    (typeof person).should.equals("function");
+    person.should.haveOwnProperty("isJKT");
+    person.should.haveOwnProperty("schema");
+    person.should.haveOwnProperty("childOf");
+    (typeof person.childOf).should.equals("function");
+    person.should.haveOwnProperty("__id");
+    person.should.haveOwnProperty("__schema");
 
-    expect(person).to.haveOwnProperty("isJKT");
-    expect(person).to.haveOwnProperty("schema");
-    expect(person).to.haveOwnProperty("childOf");
-    expect(person).to.haveOwnProperty("__id");
-    expect(person).to.haveOwnProperty("__schema");
-
-    expect(child).to.haveOwnProperty("name");
-    expect(child).to.haveOwnProperty("age");
-    expect(child).to.haveOwnProperty("birth");
-    expect(child).to.haveOwnProperty("j");
-    expect(child).to.haveOwnProperty("getSchema");
-    expect(child).to.haveOwnProperty("getDirtySchema");
-    expect(child).to.haveOwnProperty("toJSON");
-    expect(child).to.haveOwnProperty("toString");
-    expect(child).to.haveOwnProperty("instanceOf");
+    child.should.haveOwnProperty("name");
+    child.should.haveOwnProperty("age");
+    child.should.haveOwnProperty("birth");
+    child.should.haveOwnProperty("j");
+    (typeof child.j).should.equals("function");
+    child.should.haveOwnProperty("getSchema");
+    (typeof child.getSchema).should.equals("function");
+    child.should.haveOwnProperty("getDirtySchema");
+    (typeof child.getDirtySchema).should.equals("function");
+    child.should.haveOwnProperty("toJSON");
+    (typeof child.toJSON).should.equals("function");
+    child.should.haveOwnProperty("toString");
+    (typeof child.toString).should.equals("function");
+    child.should.haveOwnProperty("instanceOf");
+    (typeof child.instanceOf).should.equals("function");
   });
   it("should have built-in properties for enum object", () => {
-    // check isJKTEnum
-    // check values
-    // check instance has function j and toJSON
+    const Colors = jkt.ENUM`Red, green, blue`;
+
+    (typeof Colors).should.equals("function");
+    Colors.should.haveOwnProperty("isJKTENUM");
+    Colors.should.haveOwnProperty("j");
+    (typeof Colors.j).should.equals("function");
+    Colors.should.haveOwnProperty("toJSON");
+    (typeof Colors.toJSON).should.equals("function");
   });
   it("should be able to parse in-listed values", () => {});
   it("should be able to parse object values", () => {});
