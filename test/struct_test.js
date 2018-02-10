@@ -1,5 +1,6 @@
 "use strict";
 
+const moment = require("moment");
 const chai = require("chai");
 const jkt = require(`${src}/index`);
 const reservedKeys = require(`${src}/reserved_keys`);
@@ -488,7 +489,49 @@ describe("Struct", () => {
     Colors.should.haveOwnProperty("toJSON");
     (typeof Colors.toJSON).should.equals("function");
   });
-  it("should be able to parse in-listed values", () => {});
+  it("should be able to parse in-listed values", () => {
+    const stringParse = jkt`name: String`({ name: "Aditya kresna Permana" });
+    const numberParse = jkt`age: Number`({ age: "26" });
+    const dateParse = jkt`birth: Date`({ birth: "1991-06-18" });
+    const boolParse = jkt`isMarried: Boolean`({ isMarried: true });
+    const objectParse = jkt`basket: Object`({
+      basket: { fruits: ["banana", "orange", "apple"] }
+    });
+    const functionParse = jkt`showColor: Function`({
+      showColor: color => `this is ${color}`
+    });
+    const arrayParse = jkt`hobbies: Array`({
+      hobbies: ["fishing", "running", "climbing"]
+    });
+
+    (typeof stringParse.name).should.equals("string");
+    expect(stringParse.name).to.be.equal("Aditya kresna Permana");
+
+    (typeof numberParse.age).should.equals("number");
+    expect(numberParse.age).to.be.equal(26);
+
+    expect(moment.isMoment(dateParse.birth)).to.be.true;
+    expect(dateParse.birth.format("DD-MM-YYYY")).to.be.equal("18-06-1991");
+
+    (typeof boolParse.isMarried).should.equals("boolean");
+    expect(boolParse.isMarried).to.be.true;
+
+    (typeof objectParse.basket).should.equals("object");
+    expect(objectParse.basket).to.deep.equal({
+      fruits: ["banana", "orange", "apple"]
+    });
+
+    (typeof functionParse.showColor).should.equals("function");
+    expect(functionParse.showColor("blue")).to.be.equal("this is blue");
+
+    expect(arrayParse.hobbies).to.be.an.instanceOf(Array);
+    expect(arrayParse.hobbies).to.have.ordered.members([
+      "fishing",
+      "running",
+      "climbing"
+    ]);
+  });
+  it("should thrown error when parse non in-listed values", () => {});
   it("should be able to parse object values", () => {});
   it("should be able to parse function values", () => {});
 });
