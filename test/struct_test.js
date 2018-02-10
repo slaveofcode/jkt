@@ -125,6 +125,7 @@ describe("Struct", () => {
       name: String
       age: Number
       hobby: ${hobby}
+      toys: Array
     `;
 
     const mother = jkt`
@@ -138,17 +139,31 @@ describe("Struct", () => {
       beauty: true,
       child: {
         name: "Dera",
-        age: "5",
+        age: "5.67",
+        toys: [1, "dua", 3],
         hobby: {
           name: "Fishing",
-          cost: 300,
+          cost: "300",
           outdoor: "yes",
           lalala: "sss"
         }
       }
     });
 
-    console.log(parsed.j());
+    expect(parsed.j()).to.deep.equal({
+      gender: "Woman",
+      beauty: true,
+      child: {
+        name: "Dera",
+        age: 5.67,
+        toys: [1, "dua", 3],
+        hobby: {
+          name: "Fishing",
+          cost: 300,
+          outdoor: null
+        }
+      }
+    });
   });
   it("should be able to create struct with enum", () => {});
   it("should be able to parse value with enum", () => {});

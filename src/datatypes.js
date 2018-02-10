@@ -25,22 +25,19 @@ const FUNCTION_ONLY = `${FUNCTION}!`;
 const ANY = "Any";
 
 const parserableTypes = typeName =>
+  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY].includes(
+    typeName
+  );
+
+const nonNullableTypes = typeName =>
   [
-    STRING,
     STRING_ONLY,
-    ARRAY,
     ARRAY_ONLY,
-    BOOLEAN,
     BOOLEAN_ONLY,
-    DATE,
     DATE_ONLY,
-    FUNCTION,
     FUNCTION_ONLY,
-    NUMBER,
     NUMBER_ONLY,
-    OBJECT,
-    OBJECT_ONLY,
-    ANY
+    OBJECT_ONLY
   ].includes(typeName);
 
 const isEnum = value =>
@@ -95,6 +92,7 @@ module.exports = {
   FUNCTION_ONLY,
   ANY,
   parserableTypes,
+  nonNullableTypes,
   isEnum,
   makeEnum,
   isDeleteProperty
