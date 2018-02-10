@@ -2,6 +2,7 @@
 
 const chai = require("chai");
 const jkt = require(`${src}/index`);
+const reservedKeys = require(`${src}/reserved_keys`);
 
 chai.should();
 chai.use(require("chai-things"));
@@ -358,7 +359,7 @@ describe("Struct", () => {
     `;
 
     const person = jkt`
-      name: String
+      name: String,
       age: Number
       hobby: ${Hobbies}
     `;
@@ -386,9 +387,60 @@ describe("Struct", () => {
       hobby: null
     });
   });
-  it("should be able to extend from existing struct", () => {});
-  it("should be able to extend from existing struct with deleting parent property", () => {});
-  it("should trigger error when using reserved words", () => {});
+  it("should trigger error when using reserved words", () => {
+    const reservedJObj = () => {
+      const person = jkt`
+        name: String
+        j: Object
+      `;
+    };
+
+    const reservedToJSONObj = () => {
+      const person = jkt`
+        name: String
+        toJSON: Object
+      `;
+    };
+
+    const reservedGetSchema = () => {
+      const person = jkt`
+        name: String
+        getSchema: Object
+      `;
+    };
+
+    const reservedGetDirtySchema = () => {
+      const person = jkt`
+        name: String
+        getDirtySchema: Object
+      `;
+    };
+
+    const reservedInstanceOf = () => {
+      const person = jkt`
+        name: String
+        instanceOf: Object
+      `;
+    };
+
+    const reservedToString = () => {
+      const person = jkt`
+        name: String
+        toJSON: Object
+      `;
+    };
+
+    const errorThrown = `Any properties and methods with name ${reservedKeys.RESERVED_KEYS.join(
+      ", "
+    )} are reserved`;
+
+    expect(reservedJObj).to.throw(errorThrown);
+    expect(reservedToJSONObj).to.throw(errorThrown);
+    expect(reservedToString).to.throw(errorThrown);
+    expect(reservedGetSchema).to.throw(errorThrown);
+    expect(reservedGetDirtySchema).to.throw(errorThrown);
+    expect(reservedInstanceOf).to.throw(errorThrown);
+  });
   it("should be able to parse in-listed values", () => {});
   it("should be able to parse object values", () => {});
   it("should be able to parse function values", () => {});
@@ -397,5 +449,9 @@ describe("Struct", () => {
     // check schema
     // check instance has function getSchema, toJSON, toString
   });
-  it("should be able to use existing struct as a nested struct", () => {});
+  it("should have built-in properties for enum object", () => {
+    // check isJKTEnum
+    // check values
+    // check instance has function j and toJSON
+  });
 });
