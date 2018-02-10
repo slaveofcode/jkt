@@ -192,6 +192,63 @@ describe("Struct", () => {
     expect(someHuman.childOf(person)).to.be.true;
     expect(someHuman.childOf(mother)).to.be.true;
   });
+  it.only("should be able to handle values with container", () => {
+    const person = jkt`
+      name: String
+      age: Number
+      birthday: Date
+    `;
+
+    const fruit = jkt`
+      name: String
+      color: String
+    `;
+
+    const people = jkt`
+      group: String
+      people: ${jkt.c.arr(person)}
+    `;
+
+    const countryGroup = jkt`
+      country: String
+      groupOfPeople: ${people}
+      fruits: ${jkt.c.arr(fruit)}
+    `;
+
+    // const groupOfPeople = people({
+    //   group: "Bike Lover",
+    //   people: [
+    //     {
+    //       name: "Tono"
+    //     },
+    //     {
+    //       name: "Aditya",
+    //       age: "26"
+    //     },
+    //     "sasasa"
+    //   ]
+    // });
+
+    const groupOfCountry = countryGroup({
+      country: "Indonesia",
+      // fruits: [{ sasa: "ss" }],
+      groupOfPeople: {
+        group: "Bike Lover",
+        people: [
+          {
+            name: "Tono"
+          },
+          {
+            name: "Aditya",
+            age: "26"
+          },
+          "sasasa"
+        ]
+      }
+    });
+
+    console.log(groupOfCountry.j());
+  });
   it("should be able to create struct with enum", () => {});
   it("should be able to parse value with enum", () => {});
   it("should be able to extend from existing struct", () => {});

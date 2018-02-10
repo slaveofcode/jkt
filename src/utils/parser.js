@@ -99,11 +99,21 @@ const valueParser = (schema, valuesToParse) => {
       } else if (nonNullableTypes(valueType)) {
         if (nonNullableChecker[valueType](value))
           parsedValues[key] = nonNullableParser[valueType](value);
+      } else if (valueType.isContainer) {
+        // struct inside of container
+        parsedValues[key] = valueType.parse(valueParser, value);
       } else {
         parsedValues[key] = value;
       }
     } else if (!parserableTypes(valueType) && isPredefinedTypes(valueType)) {
-      parsedValues[key] = valueType;
+      // the predefined type is container type
+      // so we put value handled with its container here
+      if (valueType.isContainer) {
+        parsedValues[key] = valueType.parse(valueParser, value);
+      } else {
+        // custom defined values from the begining of struct creation
+        parsedValues[key] = valueType;
+      }
     } else {
       // Value was undefined or not matched with available schema
       parsedValues[key] = null;
@@ -117,3 +127,4 @@ const parse = baseSchema => {
 };
 
 module.exports = parse;
+module.exports.valueParser = valueParser;

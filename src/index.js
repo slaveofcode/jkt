@@ -3,6 +3,7 @@
 const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
+const container = require("./container");
 const { isEnum, makeEnum, isDeleteProperty } = require("./datatypes");
 const {
   hasReservedKeys,
@@ -75,7 +76,7 @@ const jkt = (strings, ...bindings) => {
 
 module.exports = jkt;
 module.exports.Inst = inst;
-module.exports.ENUM = "";
+module.exports.c = container;
 
 /**
  * const { ENUM } = require('jkt')
