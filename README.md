@@ -9,7 +9,7 @@ The library handles the exact value to strictly follow the defined types, so you
 
 This library was inspired when every time I check the type of arguments to pass into some function. With that idea in my mind I try to figure out what I can build to handle the situation, so my time wasn't spent too much doing repetitive action.
 
-So **JKT** is coming onto my head, because it's an abbreviation of "Jakarta" the city where I'm working (when I struggle of).
+So **JKT** is coming onto my head, sorry I named it `jkt` because it's simple and the abbreviation of "Jakarta" the city where I'm working on (and I am struggle of).
 
 ### The Concept of Struct
 
