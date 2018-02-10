@@ -29,6 +29,10 @@ const inst = (__id, schema, utils) => {
         cleanSchema[key] = !isJKTObject(schema[key])
           ? schema[key]
           : schema[key].schema;
+      } else {
+        cleanSchema[key] = `ENUM(${JSON.stringify(
+          Object.keys(schema[key].j())
+        ).replace(/\]*\[*\"*/g, "")})`;
       }
       dirtySchema[key] = schema[key];
     }
@@ -64,7 +68,7 @@ const inst = (__id, schema, utils) => {
   Object.keys(dirtySchema).forEach(key => {
     if (isENUMObject(schema[key])) {
       if (!struct[enumKey]) struct[enumKey] = {};
-      struct[enumKey][key] = schema[key].j();
+      struct[enumKey][key.toUpperCase()] = schema[key].j();
     }
   });
 

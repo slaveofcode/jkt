@@ -95,7 +95,12 @@ const valueParser = (schema, valuesToParse) => {
       if (parserableTypes(valueType)) {
         parsedValues[key] = parser[valueType](value);
       } else if (detector.isJKTObject(valueType)) {
+        // handle jkt obj
         parsedValues[key] = valueParser(valueType.__schema, value);
+      } else if (detector.isENUMObject(valueType)) {
+        // handle enum
+        const validEnumValues = Object.values(valueType.j());
+        parsedValues[key] = validEnumValues.includes(value) ? value : null;
       } else if (nonNullableTypes(valueType)) {
         if (nonNullableChecker[valueType](value))
           parsedValues[key] = nonNullableParser[valueType](value);

@@ -337,19 +337,40 @@ describe("Struct", () => {
       hobby: ${jkt.ENUM("biking, swimming: Berenang")}
     `;
 
-    expect(person.E.hobby).to.deep.equal({
+    expect(person.E.HOBBY).to.deep.equal({
       BIKING: "BIKING",
       SWIMMING: "SWIMMING",
       RUNNING: "RUNNING",
       SOMETHING: "Interesting",
       SOME: "Value Here"
     });
-    expect(person2.E.hobby).to.deep.equal({
+    expect(person2.E.HOBBY).to.deep.equal({
       BIKING: "BIKING",
       SWIMMING: "Berenang"
     });
   });
-  it("should be able to parse value without enum included", () => {});
+  it("should be able to parse value without enum included", () => {
+    const Colors = jkt.ENUM`white, blue, green, orange`;
+    const Hobbies = jkt.ENUM`
+      Hiking
+      Biking
+      Swimming
+    `;
+
+    const person = jkt`
+      name: String
+      age: Number
+      hobby: ${Hobbies}
+    `;
+
+    const aditya = person({
+      name: "Aditya kresna",
+      age: "26",
+      hobby: "SWIMMING"
+    });
+    console.log(aditya.getSchema());
+    console.log(aditya.j());
+  });
   it("should be able to extend from existing struct", () => {});
   it("should be able to extend from existing struct with deleting parent property", () => {});
   it("should trigger error when using reserved words", () => {});
