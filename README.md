@@ -120,6 +120,22 @@ Both of `driver` and `doctor` is a child of `person` struct, so you will get the
 
 ### Deleting The Parent Property
 
+Sometimes we want to extend from existing struct but on a few situation we don't wanna include some properties. By using `!DELETE` type we can exclude the property when extending from existing struct.
+
+```
+const person = jkt`
+  name: String
+  age: Number
+  hobby: Array
+  drinkBeer: Boolean
+`
+
+const child = person`
+  toys: Array
+  drinkBeer: !DELETE   // this "drinkBeer" will be deleted on child struct
+`
+```
+
 ### Checking Instance and Parent
 
 ### Makes Value Strict to The Type
