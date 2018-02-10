@@ -215,23 +215,41 @@ describe("Struct", () => {
       fruits: ${jkt.c.arr(fruit)}
     `;
 
-    // const groupOfPeople = people({
-    //   group: "Bike Lover",
-    //   people: [
-    //     {
-    //       name: "Tono"
-    //     },
-    //     {
-    //       name: "Aditya",
-    //       age: "26"
-    //     },
-    //     "sasasa"
-    //   ]
-    // });
+    const peopleStrict = jkt`
+      group: String
+      people: ${jkt.c.arr(person, true)}
+    `;
+
+    const groupOfPeople = people({
+      group: "Bike Lover",
+      people: [
+        {
+          name: "Tono"
+        },
+        {
+          name: "Aditya",
+          age: "26"
+        },
+        "sasasa"
+      ]
+    });
+
+    const groupOfStrictPeople = peopleStrict({
+      group: "Bike Lover",
+      people: [
+        {
+          name: "Tono"
+        },
+        {
+          name: "Aditya",
+          age: "26"
+        },
+        "sasasa"
+      ]
+    });
 
     const groupOfCountry = countryGroup({
       country: "Indonesia",
-      // fruits: [{ sasa: "ss" }],
       groupOfPeople: {
         group: "Bike Lover",
         people: [
@@ -241,13 +259,67 @@ describe("Struct", () => {
           {
             name: "Aditya",
             age: "26"
-          },
-          "sasasa"
+          }
         ]
       }
     });
 
-    console.log(groupOfCountry.j());
+    expect(groupOfPeople.j()).to.deep.equal({
+      group: "Bike Lover",
+      people: [
+        {
+          name: "Tono",
+          age: null,
+          birthday: null
+        },
+        {
+          name: "Aditya",
+          age: 26,
+          birthday: null
+        },
+        {
+          name: null,
+          age: null,
+          birthday: null
+        }
+      ]
+    });
+
+    expect(groupOfStrictPeople.j()).to.deep.equal({
+      group: "Bike Lover",
+      people: [
+        {
+          name: "Tono",
+          age: null,
+          birthday: null
+        },
+        {
+          name: "Aditya",
+          age: 26,
+          birthday: null
+        }
+      ]
+    });
+
+    expect(groupOfCountry.j()).to.deep.equal({
+      country: "Indonesia",
+      fruits: [],
+      groupOfPeople: {
+        group: "Bike Lover",
+        people: [
+          {
+            name: "Tono",
+            age: null,
+            birthday: null
+          },
+          {
+            name: "Aditya",
+            age: 26,
+            birthday: null
+          }
+        ]
+      }
+    });
   });
   it("should be able to create struct with enum", () => {});
   it("should be able to parse value with enum", () => {});
