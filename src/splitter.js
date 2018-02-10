@@ -11,13 +11,26 @@ const deepClone = (cln, obj) => {
   return cln;
 };
 
+const emptyValidator = values => {
+  if (isUndefined(values)) throw new Error("You need to define a schema");
+  if (values.length == 1) {
+    const s = values[0].replace(/(\s)/gm, "");
+    if (s.length === 0) throw new Error("You need to define a schema");
+  }
+};
+
+const RCTS = s => s.replace(/\,/g, "").trim();
+
+const removeCommaAndTrailingSpaces = values => values.map(RCTS);
+
 const splitter = (strict = false) => {
   return (strings, ...bindings) => {
+    emptyValidator(strings);
+
     const pairs = {};
     let bindIdx = 0;
 
-    if (isUndefined(strings)) throw new Error("You need to supply argument");
-
+    // spread value fix
     if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
 
     strings.filter(s => s.length > 0).forEach(stmt => {
@@ -29,11 +42,9 @@ const splitter = (strict = false) => {
       const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
       const splittedStr = preparedStr.split(rex);
 
-      const removedTrailSpcs = splittedStr.map(s =>
-        s.replace(/\,/g, "").trim()
-      );
+      const removedCommaTrailSpcs = removeCommaAndTrailingSpaces(splittedStr);
 
-      const cleanedBlocks = removedTrailSpcs.filter(
+      const cleanedBlocks = removedCommaTrailSpcs.filter(
         s => s.length > 0 && s !== delimiter
       );
 
@@ -68,6 +79,63 @@ const splitter = (strict = false) => {
   };
 };
 
-const enumSplitter = () => {};
+const enumSplitter = (strings, ...bindings) => {
+  emptyValidator(strings);
+
+  const pairs = {};
+  let bindIdx = 0;
+
+  // spread value fix
+  if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
+
+  strings.filter(s => s.length > 0).forEach(stmt => {
+    const delimiter = ",";
+
+    // Replacing all new lines with comma
+    const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter);
+
+    const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
+    const rexEnum = /\s*([a-zA-Z0-9\_]+)\s*\,*/g;
+    const splittedStr = preparedStr.split(rex);
+    const enumBlocks = [];
+
+    splittedStr.forEach(str => {
+      if (!rex.test(str)) {
+        // Parse enum without defined values
+        const splitted = str.split(rexEnum);
+        const removedCommaTrailSpcs = removeCommaAndTrailingSpaces(splitted);
+        const cleaned = removedCommaTrailSpcs.filter(s => s.length > 0);
+
+        if (cleaned.length > 0) enumBlocks.push(...cleaned);
+      } else {
+        // enum with defined values
+        enumBlocks.push(RCTS(str));
+      }
+    });
+
+    if (enumBlocks.length > 0) {
+      enumBlocks.forEach(block => {
+        const rexComma = /[a-zA-Z0-9\_]+\s*\:\s*[a-zA-Z0-9\_]+/g;
+        if (rexComma.test(block)) {
+          const keyValEnum = block.split(":");
+          pairs[RCTS(keyValEnum[0]).toUpperCase()] = RCTS(keyValEnum[1]);
+        } else {
+          const upperBlock = block.toUpperCase();
+          // Check predefined values to assign the custom value binding
+          if (/[a-zA-Z0-9\_]+\s*\:/g.test(block)) {
+            const keyEnum = upperBlock.replace(":", "");
+            pairs[keyEnum] = bindings[bindIdx];
+            bindIdx++;
+          } else {
+            pairs[upperBlock] = upperBlock;
+          }
+        }
+      });
+    }
+  });
+
+  return pairs;
+};
 
 module.exports = splitter;
+module.exports.enumSplitter = enumSplitter;
