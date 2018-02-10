@@ -368,8 +368,23 @@ describe("Struct", () => {
       age: "26",
       hobby: "SWIMMING"
     });
-    console.log(aditya.getSchema());
-    console.log(aditya.j());
+
+    const amelia = person({
+      name: "Amelia Zahra",
+      age: "25",
+      hobby: "hiking"
+    });
+
+    expect(aditya.j()).to.deep.equal({
+      name: "Aditya kresna",
+      age: 26,
+      hobby: "SWIMMING"
+    });
+    expect(amelia.j()).to.deep.equal({
+      name: "Amelia Zahra",
+      age: 25,
+      hobby: null
+    });
   });
   it("should be able to extend from existing struct", () => {});
   it("should be able to extend from existing struct with deleting parent property", () => {});
