@@ -1,6 +1,6 @@
 # jkt
 
-A little salt to your json data.
+A little salt to your json structure.
 
 This small library provides you a simple utility to parse and serialize json data, it can manages the structure and types of your json.
 The library handles the exact value to strictly follow the defined types, so you don't have to worry about the conversion or checking your json value & structure every time you passed it as an argument.
