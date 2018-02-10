@@ -18,7 +18,7 @@ const isSafeToRelease = typeName =>
 const serializer = {
   [STRING]: val => val,
   [NUMBER]: val => val,
-  [DATE]: val => val.toJSON(), // ISO-8601 UTC
+  [DATE]: val => (val ? val.toJSON() : null), // ISO-8601 UTC
   [BOOLEAN]: val => val
 };
 

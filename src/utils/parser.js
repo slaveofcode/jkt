@@ -33,7 +33,7 @@ const parser = {
     if (detector.isString(val)) {
       // detect ISO 8601
       const date = moment(val);
-      if (data.isValid()) return date;
+      if (date.isValid()) return date;
     }
     return null;
   },
