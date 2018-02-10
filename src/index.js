@@ -1,6 +1,5 @@
 "use strict";
 
-const shortId = require("shortid");
 const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
@@ -10,8 +9,6 @@ const {
   triggerErrorReservedKeys
 } = require("./reserved_keys");
 const { isJKTObject, isArray } = require("./utils/detector");
-
-shortId.seed(1831);
 
 const splitter = Splitter();
 
@@ -62,6 +59,7 @@ const inst = (__id, schema, utils) => {
   struct.isJKT = true;
   struct.schema = cleanSchema;
   struct.childOf = struct => descentChecker(struct);
+
   struct.__id = structId;
   struct.__schema = dirtySchema;
 
@@ -69,7 +67,7 @@ const inst = (__id, schema, utils) => {
 };
 
 const jkt = (strings, ...bindings) => {
-  const __id = shortId.generate();
+  const __id = utils.generator.generateId();
   const schema = splitter(strings, bindings);
   if (hasReservedKeys(schema)) triggerErrorReservedKeys();
   return inst(__id, schema, utils.makeUtils(schema));

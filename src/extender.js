@@ -1,13 +1,11 @@
 "use strict";
 
-const shortId = require("shortid");
+const { generator } = require("./utils");
 const Splitter = require("./splitter");
 const {
   hasReservedKeys,
   triggerErrorReservedKeys
 } = require("./reserved_keys");
-
-shortId.seed(1831);
 
 const extendBuilder = (__id, baseSchema, strict) => {
   const splitter = Splitter(strict);
@@ -19,7 +17,7 @@ const extendBuilder = (__id, baseSchema, strict) => {
 
     if (hasReservedKeys(newSchema)) triggerErrorReservedKeys();
 
-    const childId = shortId.generate();
+    const childId = generator.generateId();
     const newId = __id.concat([childId]);
     return Inst(newId, newSchema, makeUtils(newSchema));
   };

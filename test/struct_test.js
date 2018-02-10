@@ -165,7 +165,7 @@ describe("Struct", () => {
       }
     });
   });
-  it.only("should be able to check instance and parent", () => {
+  it("should be able to check instance and parent", () => {
     const person = jkt`
       name: String
       age: Number
