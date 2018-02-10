@@ -435,17 +435,17 @@ describe("Struct", () => {
       ", "
     )} are reserved`;
 
-    expect(reservedJObj).to.throw(errorThrown);
-    expect(reservedToJSONObj).to.throw(errorThrown);
-    expect(reservedToString).to.throw(errorThrown);
-    expect(reservedGetSchema).to.throw(errorThrown);
-    expect(reservedGetDirtySchema).to.throw(errorThrown);
-    expect(reservedInstanceOf).to.throw(errorThrown);
+    expect(reservedJObj).to.throw(Error, errorThrown);
+    expect(reservedToJSONObj).to.throw(Error, errorThrown);
+    expect(reservedToString).to.throw(Error, errorThrown);
+    expect(reservedGetSchema).to.throw(Error, errorThrown);
+    expect(reservedGetDirtySchema).to.throw(Error, errorThrown);
+    expect(reservedInstanceOf).to.throw(Error, errorThrown);
   });
   it("should have built-in properties for default jkt object", () => {
     const person = jkt`
       name: String
-      age: number
+      age: Number
       birth: Date
     `;
 
@@ -531,7 +531,51 @@ describe("Struct", () => {
       "climbing"
     ]);
   });
-  it("should thrown error when parse non in-listed values", () => {});
-  it("should be able to parse object values", () => {});
-  it("should be able to parse function values", () => {});
+  it("should thrown error when parse non in-listed values", () => {
+    const wrongParse = () => {
+      jkt`name: Stringsss`({});
+    };
+
+    const stringParse = () => {
+      jkt`name: String `({});
+    };
+
+    const numberParse = () => {
+      jkt`age: Number `({});
+    };
+
+    const dateParse = () => {
+      jkt`birth: Date `({});
+    };
+
+    const boolParse = () => {
+      jkt`isMarried: Boolean `({});
+    };
+
+    const arrayParse = () => {
+      jkt`hobbies: Array `({});
+    };
+
+    const objectParse = () => {
+      jkt`skils: Object `({});
+    };
+
+    const functionParse = () => {
+      jkt`sayHello: Function `({});
+    };
+
+    const anyParse = () => {
+      jkt`uniqueValue: Any `({});
+    };
+
+    expect(wrongParse).to.throw(TypeError, "Unknown type was given");
+    expect(stringParse).to.not.throw();
+    expect(numberParse).to.not.throw();
+    expect(dateParse).to.not.throw();
+    expect(boolParse).to.not.throw();
+    expect(arrayParse).to.not.throw();
+    expect(objectParse).to.not.throw();
+    expect(functionParse).to.not.throw();
+    expect(anyParse).to.not.throw();
+  });
 });

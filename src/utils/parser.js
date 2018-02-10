@@ -18,7 +18,8 @@ const {
   OBJECT_ONLY,
   ANY,
   parserableTypes,
-  nonNullableTypes
+  nonNullableTypes,
+  isPredefinedTypes
 } = require("../datatypes");
 
 const parser = {
@@ -74,17 +75,6 @@ const nonNullableParser = {
   [NUMBER_ONLY]: val => parser[NUMBER](val),
   [OBJECT_ONLY]: val => parser[OBJECT](val)
 };
-
-const isPredefinedTypes = valueType =>
-  detector.isFunction(valueType) ||
-  detector.isArray(valueType) ||
-  detector.isObject(valueType) ||
-  detector.isBoolean(valueType) ||
-  detector.isDate(valueType) ||
-  detector.isError(valueType) ||
-  detector.isNull(valueType) ||
-  detector.isNumber(valueType) ||
-  detector.isString(valueType);
 
 const valueParser = (schema, valuesToParse) => {
   const parsedValues = {};

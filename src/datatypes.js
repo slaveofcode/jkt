@@ -5,7 +5,15 @@ const {
   isNumber,
   isDate,
   isStringFloat,
-  isUndefined
+  isUndefined,
+  isFunction,
+  isArray,
+  isObject,
+  isBoolean,
+  isError,
+  isNull,
+  isENUMObject,
+  isJKTObject
 } = require("./utils/detector");
 
 const STRING = "String";
@@ -40,6 +48,40 @@ const nonNullableTypes = typeName =>
     OBJECT_ONLY
   ].includes(typeName);
 
+const isPredefinedTypes = valueType =>
+  isFunction(valueType) ||
+  isArray(valueType) ||
+  isObject(valueType) ||
+  isBoolean(valueType) ||
+  isDate(valueType) ||
+  isError(valueType) ||
+  isNull(valueType) ||
+  isNumber(valueType) ||
+  isString(valueType);
+
+const hasValidTypes = schema => {
+  let valid = true;
+  Object.values(schema).forEach(t => {
+    if (!(parserableTypes(t) || nonNullableTypes(t))) {
+      const validPredefinedVal =
+        isFunction(t) ||
+        isArray(t) ||
+        isObject(t) ||
+        isBoolean(t) ||
+        isDate(t) ||
+        isError(t) ||
+        isNull(t) ||
+        isNumber(t) ||
+        isJKTObject(t) ||
+        isENUMObject(t);
+      if (!validPredefinedVal) {
+        valid = false;
+      }
+    }
+  });
+  return valid;
+};
+
 const isDeleteProperty = value => /\s*\!DELETE\s*/g.test(value);
 
 module.exports = {
@@ -60,5 +102,7 @@ module.exports = {
   ANY,
   parserableTypes,
   nonNullableTypes,
-  isDeleteProperty
+  isDeleteProperty,
+  isPredefinedTypes,
+  hasValidTypes
 };
