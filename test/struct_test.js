@@ -114,7 +114,7 @@ describe("Struct", () => {
     expect(person.schema).to.deep.equal(validSchemaPerson);
     expect(mother.schema).to.deep.equal(validSchemaMother);
   });
-  it.only("Should be able to parse from nested struct", () => {
+  it("Should be able to parse from nested struct", () => {
     const hobby = jkt`
       name: String
       cost: Number
@@ -164,6 +164,33 @@ describe("Struct", () => {
         }
       }
     });
+  });
+  it.only("should be able to check instance and parent", () => {
+    const person = jkt`
+      name: String
+      age: Number
+      birthday: Date
+    `;
+
+    const mother = person`
+      doShopping: Boolean
+    `;
+
+    const someHuman = mother`
+      athlete: Boolean!
+    `;
+
+    const m = mother({});
+    const p = person({});
+    const h = someHuman({});
+
+    expect(m.instanceOf(person)).to.be.true;
+    expect(p.instanceOf(mother)).to.be.false;
+    expect(h.instanceOf(mother)).to.be.true;
+    expect(mother.childOf(person)).to.be.true;
+    expect(person.childOf(mother)).to.be.false;
+    expect(someHuman.childOf(person)).to.be.true;
+    expect(someHuman.childOf(mother)).to.be.true;
   });
   it("should be able to create struct with enum", () => {});
   it("should be able to parse value with enum", () => {});

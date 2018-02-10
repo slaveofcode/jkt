@@ -1,5 +1,6 @@
 "use strict";
 
+const shortId = require("shortid");
 const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
@@ -8,13 +9,21 @@ const {
   hasReservedKeys,
   triggerErrorReservedKeys
 } = require("./reserved_keys");
-const { isJKTObject } = require("./utils/detector");
+const { isJKTObject, isArray } = require("./utils/detector");
+
+shortId.seed(1831);
 
 const splitter = Splitter();
 
-const inst = (schema, utils) => {
-  const cleanSchema = {}; // pure JSON schema
-  const dirtySchema = {}; // impure JSON schema including builtin jkt function
+const descendantChecker = descendantsIds => {
+  return struct => descendantsIds.includes(struct.__id[struct.__id.length - 1]);
+};
+
+const inst = (__id, schema, utils) => {
+  const structId = isArray(__id) ? __id : [__id];
+  const cleanSchema = {}; // pure schema
+  const dirtySchema = {}; // impure schema because it's including builtin jkt function
+  const descentChecker = descendantChecker(structId);
 
   Object.keys(schema).forEach(key => {
     if (!isDeleteProperty(schema[key])) {
@@ -34,10 +43,11 @@ const inst = (schema, utils) => {
         getSchema: () => cleanSchema,
         getDirtySchema: () => dirtySchema,
         toJSON: () => utils.serialize(parsed),
-        toString: () => JSON.stringify(utils.serialize(parsed))
+        toString: () => JSON.stringify(utils.serialize(parsed)),
+        instanceOf: struct => descentChecker(struct)
       };
     } else {
-      return extendBuilder(dirtySchema)(...vals);
+      return extendBuilder(structId, dirtySchema)(...vals);
     }
   };
 
@@ -51,15 +61,18 @@ const inst = (schema, utils) => {
   // builtin properties
   struct.isJKT = true;
   struct.schema = cleanSchema;
+  struct.childOf = struct => descentChecker(struct);
+  struct.__id = structId;
   struct.__schema = dirtySchema;
 
   return struct;
 };
 
 const jkt = (strings, ...bindings) => {
+  const __id = shortId.generate();
   const schema = splitter(strings, bindings);
   if (hasReservedKeys(schema)) triggerErrorReservedKeys();
-  return inst(schema, utils.makeUtils(schema));
+  return inst(__id, schema, utils.makeUtils(schema));
 };
 
 module.exports = jkt;
