@@ -55,7 +55,7 @@ const splitter = (strict = false) => {
     });
 
     const pairVals = Object.values(pairs);
-    const countUndefTypes = pairVals.map(
+    const countUndefTypes = pairVals.filter(
       typeVal => typeof typeVal === "undefined"
     ).length;
 
@@ -67,5 +67,7 @@ const splitter = (strict = false) => {
     return pairs;
   };
 };
+
+const enumSplitter = () => {};
 
 module.exports = splitter;
