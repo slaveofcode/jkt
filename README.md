@@ -77,11 +77,50 @@ By using spaces, new line and tabs you don't have to worry about the results. Th
 
 ### Custom Predefined Value
 
+When you need to setup custom value upfront, without checking it's type or doing some validations, You could use it as a predefined value. Predefined value is the value you define when defining the struct.
+
+```
+const mother = jkt`
+  name: String
+  birthday: Date
+  isMarried: ${true}
+`
+
+const angela = mother({ name: "Angela", "Birthday": "1990-06-06" })
+
+console.log(angela.isMarried) // true
+```
+
+You could pass anything you want into this, but if you pass a `function` for example, it will not showing on the output when you calling `toJSON` or `j` function on the instance, because the value wasn't a valid json type.
+
 ### Extending The Struct
 
-### Checking Instance and Parent
+Once you define a struct it possible to extend into another struct, so your new struct would be a child of the parent struct.
+
+```
+const person = jkt`
+  name: String
+  age: Number
+  hobby: Array
+  birthday: Date
+`
+
+const driver = person`
+  useBike: Boolean
+  useCar: Boolean
+`
+
+const doctor = person`
+  specialist: String
+  hospitalLocation: String
+`
+```
+
+Both of `driver` and `doctor` is a child of `person` struct, so you will get the `name`, `age`, `hobby` and `birthday` when you do parse of the `driver` and `doctor` instance.
 
 ### Deleting The Parent Property
+
+### Checking Instance and Parent
 
 ### Makes Value Strict to The Type
 
@@ -90,6 +129,8 @@ By using spaces, new line and tabs you don't have to worry about the results. Th
 ### Nested Values
 
 ### Container (Array)
+
+### Reserved Keywords
 
 ## Test
 
