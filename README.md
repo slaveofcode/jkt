@@ -136,7 +136,34 @@ const child = person`
 `
 ```
 
-### Checking Instance and Parent
+### Checking Instance and Child
+
+There will be no fun if we could extend the struct but we cannot check if the struct is the parent or the instance of the another object. The example below will be useful if you want to checking the instance and child.
+
+```
+const person = jkt`
+  name: String
+  age: Number
+  hobby: Array
+`
+const child = person`
+  toys: Array
+  doingHomework: Boolean
+`
+
+const mother = person`
+  singleParent: Boolean
+`
+
+const John = child({
+  name: "John Doe"
+})
+
+console.log(child.childOf(person)) // true
+console.log(mother.childOf(person)) // true
+console.log(John.instanceOf(person)) // true
+console.log(John.instanceOf(child)) // true
+```
 
 ### Makes Value Strict to The Type
 
