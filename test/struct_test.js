@@ -441,17 +441,43 @@ describe("Struct", () => {
     expect(reservedGetDirtySchema).to.throw(errorThrown);
     expect(reservedInstanceOf).to.throw(errorThrown);
   });
-  it("should be able to parse in-listed values", () => {});
-  it("should be able to parse object values", () => {});
-  it("should be able to parse function values", () => {});
   it("should have built-in properties for default jkt object", () => {
-    // check isJkt
-    // check schema
-    // check instance has function getSchema, toJSON, toString
+    const person = jkt`
+      name: String
+      age: number
+      birth: Date
+    `;
+
+    const child = person({
+      name: "Aditya",
+      age: 14,
+      birth: "1991-06-33"
+    });
+
+    console.log(child);
+
+    expect(person).to.haveOwnProperty("isJKT");
+    expect(person).to.haveOwnProperty("schema");
+    expect(person).to.haveOwnProperty("childOf");
+    expect(person).to.haveOwnProperty("__id");
+    expect(person).to.haveOwnProperty("__schema");
+
+    expect(child).to.haveOwnProperty("name");
+    expect(child).to.haveOwnProperty("age");
+    expect(child).to.haveOwnProperty("birth");
+    expect(child).to.haveOwnProperty("j");
+    expect(child).to.haveOwnProperty("getSchema");
+    expect(child).to.haveOwnProperty("getDirtySchema");
+    expect(child).to.haveOwnProperty("toJSON");
+    expect(child).to.haveOwnProperty("toString");
+    expect(child).to.haveOwnProperty("instanceOf");
   });
   it("should have built-in properties for enum object", () => {
     // check isJKTEnum
     // check values
     // check instance has function j and toJSON
   });
+  it("should be able to parse in-listed values", () => {});
+  it("should be able to parse object values", () => {});
+  it("should be able to parse function values", () => {});
 });
