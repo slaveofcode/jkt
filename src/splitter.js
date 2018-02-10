@@ -1,6 +1,6 @@
 "use strict";
 
-const { isUndefined, isArray } = require("./utils/detector");
+const { isUndefined, isArray, isString } = require("./utils/detector");
 
 const deepClone = (cln, obj) => {
   for (const i in obj)
@@ -87,6 +87,9 @@ const enumSplitter = (strings, ...bindings) => {
 
   // spread value fix
   if (isArray(bindings) && bindings.length > 0) bindings = bindings[0];
+
+  // handle string argument
+  if (isString(strings)) strings = [strings];
 
   strings.filter(s => s.length > 0).forEach(stmt => {
     const delimiter = ",";

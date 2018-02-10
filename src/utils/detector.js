@@ -39,6 +39,17 @@ const isJKTObject = valueType => {
 
   return isJKT && hasSchema;
 };
+const isENUMObject = valueType => {
+  let isENUM = false;
+  let hasToJsonFunc = false;
+  if (Object(valueType).hasOwnProperty("isJKTENUM")) isENUM = true;
+  if (
+    Object(valueType).hasOwnProperty("j") &&
+    Object(valueType).hasOwnProperty("toJSON")
+  )
+    hasToJsonFunc = true;
+  return isENUM && hasToJsonFunc;
+};
 
 module.exports = {
   isArray,
@@ -55,5 +66,6 @@ module.exports = {
   isInt,
   isFloat,
   isStringFloat,
-  isJKTObject
+  isJKTObject,
+  isENUMObject
 };

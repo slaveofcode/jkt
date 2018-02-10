@@ -192,7 +192,7 @@ describe("Struct", () => {
     expect(someHuman.childOf(person)).to.be.true;
     expect(someHuman.childOf(mother)).to.be.true;
   });
-  it.only("should be able to handle values with container", () => {
+  it("should be able to handle values with container", () => {
     const person = jkt`
       name: String
       age: Number
@@ -321,8 +321,35 @@ describe("Struct", () => {
       }
     });
   });
-  it("should be able to create struct with enum", () => {});
-  it("should be able to parse value with enum", () => {});
+  it("should be able to create struct with enum", () => {
+    const hobby = jkt.ENUM`
+      biking
+      swimming
+      running
+      something: Interesting
+      some: ${"Value Here"}
+    `;
+    const person = jkt`
+      hobby: ${hobby}
+    `;
+
+    const person2 = jkt`
+      hobby: ${jkt.ENUM("biking, swimming: Berenang")}
+    `;
+
+    expect(person.E.hobby).to.deep.equal({
+      BIKING: "BIKING",
+      SWIMMING: "SWIMMING",
+      RUNNING: "RUNNING",
+      SOMETHING: "Interesting",
+      SOME: "Value Here"
+    });
+    expect(person2.E.hobby).to.deep.equal({
+      BIKING: "BIKING",
+      SWIMMING: "Berenang"
+    });
+  });
+  it("should be able to parse value without enum included", () => {});
   it("should be able to extend from existing struct", () => {});
   it("should be able to extend from existing struct with deleting parent property", () => {});
   it("should trigger error when using reserved words", () => {});

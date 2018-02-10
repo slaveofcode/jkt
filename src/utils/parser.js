@@ -106,13 +106,16 @@ const valueParser = (schema, valuesToParse) => {
         parsedValues[key] = value;
       }
     } else if (!parserableTypes(valueType) && isPredefinedTypes(valueType)) {
-      // the predefined type is container type
-      // so we put value handled with its container here
-      if (valueType.isContainer) {
-        parsedValues[key] = valueType.parse(valueParser, value);
-      } else {
-        // custom defined values from the begining of struct creation
-        parsedValues[key] = valueType;
+      // Do not parse enum value
+      if (!detector.isENUMObject(valueType)) {
+        // the predefined type is container type
+        // so we put value handled with its container here
+        if (valueType.isContainer) {
+          parsedValues[key] = valueType.parse(valueParser, value);
+        } else {
+          // custom defined values from the begining of struct creation
+          parsedValues[key] = valueType;
+        }
       }
     } else {
       // Value was undefined or not matched with available schema

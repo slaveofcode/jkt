@@ -4,14 +4,14 @@ const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
 const container = require("./container");
-const { isEnum, makeEnum, isDeleteProperty } = require("./datatypes");
+const { isDeleteProperty } = require("./datatypes");
 const {
   hasReservedKeys,
   triggerErrorReservedKeys
 } = require("./reserved_keys");
-const { isJKTObject, isArray } = require("./utils/detector");
+const { isJKTObject, isENUMObject, isArray } = require("./utils/detector");
 
-const splitter = Splitter();
+const splitter = Splitter(true);
 
 const descendantChecker = descendantsIds => {
   return struct => descendantsIds.includes(struct.__id[struct.__id.length - 1]);
@@ -25,9 +25,11 @@ const inst = (__id, schema, utils) => {
 
   Object.keys(schema).forEach(key => {
     if (!isDeleteProperty(schema[key])) {
-      cleanSchema[key] = !isJKTObject(schema[key])
-        ? schema[key]
-        : schema[key].schema;
+      if (!isENUMObject(schema[key])) {
+        cleanSchema[key] = !isJKTObject(schema[key])
+          ? schema[key]
+          : schema[key].schema;
+      }
       dirtySchema[key] = schema[key];
     }
   });
@@ -49,13 +51,6 @@ const inst = (__id, schema, utils) => {
     }
   };
 
-  // Object.keys(cleanSchema).forEach(key => {
-  //   if (isEnum(cleanSchema[key])) {
-  //     const enums = makeEnum(cleanSchema[key]);
-  //     if (Object.keys(enums).length > 0) struct[key] = enums;
-  //   }
-  // });
-
   // builtin properties
   struct.isJKT = true;
   struct.schema = cleanSchema;
@@ -63,6 +58,15 @@ const inst = (__id, schema, utils) => {
 
   struct.__id = structId;
   struct.__schema = dirtySchema;
+
+  // make enum available to access directly by calling property
+  const enumKey = "E";
+  Object.keys(dirtySchema).forEach(key => {
+    if (isENUMObject(schema[key])) {
+      if (!struct[enumKey]) struct[enumKey] = {};
+      struct[enumKey][key] = schema[key].j();
+    }
+  });
 
   return struct;
 };
@@ -74,9 +78,21 @@ const jkt = (strings, ...bindings) => {
   return inst(__id, schema, utils.makeUtils(schema));
 };
 
+const ENUM = (strings, ...bindings) => {
+  const enumDefinitions = Splitter.enumSplitter(strings, bindings);
+  const enumFunc = function() {
+    return enumDefinitions;
+  };
+  enumFunc.isJKTENUM = true;
+  enumFunc.j = () => enumDefinitions;
+  enumFunc.toJSON = () => enumDefinitions;
+  return enumFunc;
+};
+
 module.exports = jkt;
 module.exports.Inst = inst;
 module.exports.c = container;
+module.exports.ENUM = ENUM;
 
 /**
  * const { ENUM } = require('jkt')
