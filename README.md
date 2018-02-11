@@ -13,7 +13,7 @@ So **JKT** is coming onto my head, sorry I named it `jkt` because it's simple an
 
 ### The Concept of Struct
 
-You just have to define the JKT struct once and then you could rely on them for the rest of your life. The struct is defined by using template literal so you don't have to writing json structure every time (I don't like to write json for that actually).
+You just have to define the JKT struct once and then you could rely on them for the rest of the day. The struct is defined by using template literal so you don't have to writing json structure every time (I don't like to write json for that actually).
 
 Here's the example of the struct
 
@@ -21,6 +21,7 @@ Here's the example of the struct
 const person = jkt`
   name: String
   age: Number
+  birthday: Date
 `
 ```
 
@@ -36,10 +37,10 @@ const John = person({
 
 // it makes John a person object like
 // You can call it by
-console.log(John.name, John.age) // produces "John Doe" in string and 26 in number
+console.log(John.name, John.age, John.birthday) // produces "John Doe" in string, 26 in number and null
 ```
 
-Once you define the `person` structure, you could use it everywhere, make an instance of it and also consume the parsed values. The value that produces is converted safely following the type defined before, if it's `String` it will converted to string, if the type is `Number` it will be converted to following int or float (based on the provided value).
+Once you define the `person` structure, you could use it everywhere, make an instance of it and also consume the parsed values. The value that produces is converted safely following the type defined before, if it's `String` it will converted to string, if the type is `Number` it will be converted to following int or float (based on the provided value). If the supplied value is undefined or doen's match it's type, in this example is `birthday` would produce as a `null` value.
 
 ### Serializing
 
@@ -51,13 +52,13 @@ const John = person({
   age: '26'
 })
 
-console.log(John.toJSON()) // produce a pure json data
-console.log(John.j()) // the shorthand
+console.log(John.toJSON()) // { name: "John Doe", age: 26, birthday: null }
+console.log(John.j()) // the shorthand method
 ```
 
 ### One Liner VS Multi Liner
 
-There is a few method you can follow while making a struct, **One Line** and **Multi Line**. If you found it very short struct and don't wanna make a space with using multi lines, you could simply create a struct separated by `comma` like this
+There is a few method you can follow while making a struct, **One Line** and **Multi Line**. If you found it very short struct and don't wanna make more space with using multi lines, you could simply create a struct separated by comma `,` like this
 
 ```
 const Animal = jkt`type: String, color: String, isWild: Boolean`
@@ -73,7 +74,7 @@ const Animal = jkt`
 `
 ```
 
-By using spaces, new line and tabs you don't have to worry about the results. Those two example are valid to use.
+Don't worry about the both statement above. Those two example are valid to use.
 
 ### Custom Predefined Value
 
@@ -167,13 +168,131 @@ console.log(John.instanceOf(child)) // true
 
 ### Makes Value Strict to The Type
 
+As mentioned before, every unsupplied value or invalid type of value would be produce null when you do parsing or serializing. But how if you don't want to have it all. If you better to not gaining any values rather than null value, you could simply add an exclamation mark(`!`) on it. For example for the `Number` type you just add `!` on the end of the statement which would be `Number!`.
+
+```
+const person = jkt`
+  name: String
+  age: Number!
+  hobby: Array!
+`
+
+const John = person({ name: "John Doe", age: "not sure"})
+
+console.log(John.j()) // { name: "John Doe" }
+```
+
 ### ENUM Value and Utility
 
+So you have been reading through the basic of jkt library, but somehow we need to referrence some value based on it's own defined types. This method could be done with `ENUM`. ENUM is another feature that you can use when you need to strictly follow the type as you defined if before.
+
+```
+const Colors = jkt.ENUM`
+  RED: Maroon
+  WHITE
+  BLUE: ${'just blue'}
+`
+
+const TSize = jkt.ENUM`small, medium, large, extra_large: ${'EXTRA-LARGE'}`
+
+const t_shirt = jkt`
+  model: String
+  brand: Number!
+  color: ${Colors}
+  size: ${TSize}
+`
+
+console.log(Colors()) // { RED: 'Maroon', WHITE: 'WHITE', BLUE: 'just blue' }
+console.log(TSize()) // { SMALL: 'SMALL', MEDIUM: 'MEDIUM', LARGE: 'LARGE', EXTRA_LARGE: 'EXTRA-LARGE' }
+```
+
+By using ENUM your value on `color` and `size` property (on the example), those properties just accept the value defined in that `ENUM`. Important to you to know that `ENUM` will convert all the words described into an **upper cased** value, using it as a **key** and **value** if you're not supply the value before. ENUM doesn't accept any special characters except underscore `_`. If you want to add special character just put in as an expression by the dollar sign and curly braces `${yourExpression}`.
+
+Once you create the ENUM you could use it by calling as a function, and when the ENUM type is used on the struct you could simply call it directly from the struct. The property that have enum type would be converted to an **upper-cased** property.
+
+```
+const Colors = jkt.ENUM`
+  RED: Maroon
+  WHITE
+  BLUE: ${'just blue'}
+`
+
+const t_shirt = jkt`
+  model: String
+  brand: Number!
+  color: ${Colors}
+`
+
+console.log(t_shirt.E.COLOR.RED) // Maroon
+```
+
+The `E` stands for the collection of the ENUM on `t_shirt` struct. If you want to see the complete values of ENUM just take the `E` property and you will get it.
+
 ### Nested Values
+
+You may wonder about how if we got a nested structure, and how to use it with struct. Every single struct we define is an independent structure that could be used as a nested structure. By this point you got a very reusable component as you may need the same structure on the future.
+
+```
+const Person = jkt`
+  name: String
+  age: Number
+  birthday: Date
+`
+
+const SchoolClass = jkt`
+  name: String
+  grade: Number
+  teacher: ${Person}
+`
+
+console.log(SchoolClass.schema)
+
+/**
+{
+  name: 'String',
+  grade: 'Number',
+  teacher: {
+    name: 'String',
+    age: 'Number',
+    birthday: 'Date'
+  }
+}
+*/
+```
+
+As you can see the schema completely include the struct of the person. So when you do parse or serialize the value inside `teacher` it will simply follow the exact schema.
+
+```
+// ... following the previous code
+
+const mySchoolClass = SchoolClass({
+  name: 'Awesome Class',
+  grade: '10',
+  teacher: {
+    name: 'Amelia',
+    age: 25,
+    birthday: '1992-05-31'
+  }
+})
+
+console.log(mySchoolClass.j())
+/**
+{ name: 'Awesome Class',
+  grade: 10,
+  teacher: {
+    name: 'Amelia',
+    age: 25,
+    birthday: '1992-05-30T17:00:00.000Z'
+  }
+}
+*/
+```
 
 ### Container (Array)
 
 ### Reserved Keywords
+
+### Types
 
 ## Test
 
