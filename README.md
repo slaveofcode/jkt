@@ -13,7 +13,7 @@ So **JKT** is coming onto my head, sorry I named it `jkt` because it's simple an
 
 ## Installation
 
-You need node 8 or above
+You need node with version `6.4.0` and up
 
 ```
 npm i jkt --save
