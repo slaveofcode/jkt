@@ -11,6 +11,14 @@ This library was inspired when every time I check the type of arguments to pass 
 
 So **JKT** is coming onto my head, sorry I named it `jkt` because it's simple and the abbreviation of "Jakarta" the city where I'm working on (and I am struggle of).
 
+## Installation
+
+You need node 8 or above
+
+```
+npm i jkt --save
+```
+
 ### The Concept of Struct
 
 You just have to define the JKT struct once and then you could rely on them for the rest of the day. The struct is defined by using template literal so you don't have to writing json structure every time (I don't like to write json for that actually).
@@ -271,7 +279,7 @@ const mySchoolClass = SchoolClass({
   teacher: {
     name: 'Amelia',
     age: 25,
-    birthday: '1992-05-31'
+    birthday: '1992-05-31' // ISO 8601
   }
 })
 
@@ -290,10 +298,98 @@ console.log(mySchoolClass.j())
 
 ### Container (Array)
 
+When you need an array instead of object like the example before, the **container** (`c`) could be helpful for your struct. Container will handle every items inside if it defines as a struct item.
+
+```
+const Person = jkt`
+  name: String
+  age: Number
+  birthday: Date
+`
+
+const SchoolClass = jkt`
+  name: String
+  grade: Number
+  students: ${jkt.c.arr(Person)}
+`
+```
+
+Following the code above, the `students` value will be an Array value with consist to the `Person` struct.
+
+```
+// ... following the previous code
+
+const mySchoolClass = SchoolClass({
+  name: 'Awesome Class',
+  grade: '10',
+  students: [
+    {
+      name: 'Amelia',
+      age: 25,
+      birthday: '1992-05-31'
+    },
+    {
+      name: 'Aditya',
+      age: 26
+    },
+  ]
+})
+
+console.log(mySchoolClass.j())
+/**
+{ name: 'Awesome Class',
+  grade: 10,
+  students:[
+     { name: 'Amelia', age: 25, birthday: '1992-05-30T17:00:00.000Z' },
+     { name: 'Aditya', age: 26, birthday: null }
+  ]
+}
+*/
+```
+
+On the result above, the invalid or undefined value on Aditya's birthday would parse as a `null` value.
+
 ### Reserved Keywords
+
+There is no perfect code in this world, including mine. Because some function name was used especially to support this library, you may shouldn't use the following reserved words as a property
+
+* `getSchema`
+* `getDirtySchema`
+* `j`
+* `toJSON`
+* `toString`
+* `instanceOf`
+
+Any property named with those reserved keywords will triggering error when you define the struct.
 
 ### Types
 
+The supported types so far was
+
+* `String`
+* `String!`
+* `Number`
+* `Number!`
+* `Date`
+* `Date!`
+* `Boolean`
+* `Boolean!`
+* `Array`
+* `Array!`
+* `Object`
+* `Object!`
+* `Function`
+* `Function!`
+* `ANY`
+
 ## Test
 
+```
+// Node 8 or above
+
+npm run test
+```
+
 ## LICENSE
+
+MIT
