@@ -1,5 +1,6 @@
 "use strict";
 
+const loValues = require("lodash/values");
 const { isUndefined, isArray, isString } = require("./utils/detector");
 
 const deepClone = (cln, obj) => {
@@ -65,7 +66,7 @@ const splitter = (strict = false) => {
       });
     });
 
-    const pairVals = Object.values(pairs);
+    const pairVals = loValues(pairs);
     const countUndefTypes = pairVals.filter(
       typeVal => typeof typeVal === "undefined"
     ).length;

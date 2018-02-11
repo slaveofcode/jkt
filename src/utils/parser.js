@@ -1,4 +1,6 @@
 "use strict";
+
+const loValues = require("lodash/values");
 const moment = require("moment");
 const detector = require("./detector");
 const {
@@ -89,7 +91,7 @@ const valueParser = (schema, valuesToParse) => {
         parsedValues[key] = valueParser(valueType.__schema, value);
       } else if (detector.isENUMObject(valueType)) {
         // handle enum
-        const validEnumValues = Object.values(valueType.j());
+        const validEnumValues = loValues(valueType.j());
         parsedValues[key] = validEnumValues.includes(value) ? value : null;
       } else if (nonNullableTypes(valueType)) {
         if (nonNullableChecker[valueType](value))

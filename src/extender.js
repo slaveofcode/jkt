@@ -13,7 +13,7 @@ const extendBuilder = (__id, baseSchema, strict) => {
     const { makeUtils } = require("./utils");
     const { Inst } = require("./index");
     const childSchema = splitter(childStrings, childBindings);
-    const newSchema = { ...baseSchema, ...childSchema };
+    const newSchema = Object.assign({}, baseSchema, childSchema);
 
     if (hasReservedKeys(newSchema)) triggerErrorReservedKeys();
 

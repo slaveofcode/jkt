@@ -41,15 +41,15 @@ const inst = (__id, schema, utils) => {
   const struct = function(...vals) {
     if (utils.detect.isObject(vals[0])) {
       const parsed = utils.parse(vals[0]);
-      return {
-        ...parsed,
+      Object.assign(parsed, {
         j: () => utils.serialize(parsed),
         getSchema: () => cleanSchema,
         getDirtySchema: () => dirtySchema,
         toJSON: () => utils.serialize(parsed),
         toString: () => JSON.stringify(utils.serialize(parsed)),
         instanceOf: struct => descentChecker(struct)
-      };
+      });
+      return parsed;
     } else {
       return extendBuilder(structId, dirtySchema)(...vals);
     }

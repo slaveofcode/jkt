@@ -1,5 +1,7 @@
 "use strict";
 
+const loValues = require("lodash/values");
+
 const {
   isString,
   isNumber,
@@ -61,7 +63,7 @@ const isPredefinedTypes = valueType =>
 
 const hasValidTypes = schema => {
   let valid = true;
-  Object.values(schema).forEach(t => {
+  loValues(schema).forEach(t => {
     if (!(parserableTypes(t) || nonNullableTypes(t))) {
       const validPredefinedVal =
         isFunction(t) ||

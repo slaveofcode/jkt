@@ -1,5 +1,6 @@
 "use strict";
 
+const loValues = require("lodash/values");
 const { isJKTObject, isArray, isNull } = require("./utils/detector");
 
 const baseContainerData = {
@@ -15,7 +16,7 @@ const arrayContainer = (value, strictNull = false) => {
           if (isJKTObject(value)) {
             const p = valueParser(value.__schema, valueToParse);
             let hasNotNullValue = false;
-            Object.values(p).forEach(v => {
+            loValues(p).forEach(v => {
               if (!isNull(v)) hasNotNullValue = true;
             });
             if (strictNull) {
