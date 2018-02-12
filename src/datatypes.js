@@ -59,7 +59,7 @@ const isPredefinedTypes = valueType =>
   isError(valueType) ||
   isNull(valueType) ||
   isNumber(valueType) ||
-  isString(valueType);
+  (isString(valueType) && !nonNullableTypes(valueType) && !parserableTypes(valueType));
 
 const hasValidTypes = schema => {
   let valid = true;
