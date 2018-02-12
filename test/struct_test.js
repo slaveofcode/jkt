@@ -167,6 +167,57 @@ describe("Struct", () => {
       }
     });
   });
+  it.only('should be able to show default values of nested struct', () => {
+    const hobby = jkt`
+      name: String
+      cost: Number
+      outdoor: Boolean
+    `;
+
+    const person = jkt`
+      name: String
+      age: Number
+      hobby: ${hobby}
+      toys: Array
+    `;
+
+    const mother = jkt`
+      gender: String
+      beauty: Boolean
+      child: ${person}
+    `;
+
+    const 
+
+    const sport = jkt`
+      fieldSize: Number
+      needMultipleTeam: Boolean!
+    `
+
+    const father = jkt`
+      gender: String
+      loveSport: Boolean
+      child: ${person}
+    `
+
+    const parsed = mother({});
+
+    expect(parsed.j()).to.deep.equal({
+      gender: null,
+      beauty: null,
+      child: {
+        name: null,
+        age: null,
+        toys: null,
+        hobby: {
+          name: null,
+          cost: null,
+          outdoor: null
+        },
+        toys: null
+      }
+    });
+  })
   it("should be able to check instance and parent", () => {
     const person = jkt`
       name: String

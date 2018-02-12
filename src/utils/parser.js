@@ -26,10 +26,11 @@ const {
 
 const parser = {
   [STRING]: val => {
-    if (detector.isString(val)) return val;
-    return JSON.stringify(val);
+    if (detector.isString(val) && val.length) return val;
+    const parsed = val ? JSON.stringify(val) : null;
+    return detector.isString(parsed) && parsed.length > 0 ? parsed : null;
   },
-  [ARRAY]: val => (detector.isArray(val) ? val : []),
+  [ARRAY]: val => (detector.isArray(val) ? val : null),
   [BOOLEAN]: val => (detector.isBoolean(val) ? val : null),
   [DATE]: val => {
     if (detector.isDate(val)) return val;
@@ -82,9 +83,9 @@ const valueParser = (schema, valuesToParse) => {
   const parsedValues = {};
   Object.keys(schema).forEach(key => {
     const valueType = schema[key];
-    const value = valuesToParse[key];
-    if (!detector.isUndefined(value)) {
-      if (parserableTypes(valueType)) {
+    const value = detector.isUndefined(valuesToParse) ? detector.isUndefined : valuesToParse[key];
+    if (!detector.isUndefined(value) || detector.isJKTObject(valueType)) {
+      if (parserableTypes(valueType) && !detector.isJKTObject(valueType)) {
         parsedValues[key] = parser[valueType](value);
       } else if (detector.isJKTObject(valueType)) {
         // handle jkt obj
