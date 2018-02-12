@@ -167,6 +167,75 @@ describe("Struct", () => {
       }
     });
   });
+  it('should be able to show default values of nested struct', () => {
+    const hobby = jkt`
+      name: String
+      cost: Number
+      outdoor: Boolean
+    `;
+
+    const person = jkt`
+      name: String
+      age: Number
+      hobby: ${hobby}
+      toys: Array
+    `;
+
+    const mother = jkt`
+      gender: String
+      beauty: Boolean
+      child: ${person}
+    `;
+
+    const sportRule = jkt`
+      name: String
+      strict: Boolean
+      needReferee: Boolean!
+    `
+
+    const sport = jkt`
+      fieldSize: Number
+      needMultipleTeam: Boolean!
+      rule: ${sportRule}
+    `
+
+    const father = jkt`
+      gender: String
+      loveSport: Boolean
+      sport: ${sport}
+    `
+
+    const motherValues = mother({});
+    const fatherValues = father({});
+
+    expect(motherValues.j()).to.deep.equal({
+      gender: null,
+      beauty: null,
+      child: {
+        name: null,
+        age: null,
+        toys: null,
+        hobby: {
+          name: null,
+          cost: null,
+          outdoor: null
+        },
+        toys: null
+      }
+    });
+
+    expect(fatherValues.j()).to.deep.equal({
+      gender: null,
+      loveSport: null,
+      sport: {
+        fieldSize: null,
+        rule: {
+          name: null,
+          strict: null
+        }
+      }
+    })
+  })
   it("should be able to check instance and parent", () => {
     const person = jkt`
       name: String
