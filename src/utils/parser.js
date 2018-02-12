@@ -117,7 +117,8 @@ const valueParser = (schema, valuesToParse) => {
       }
     } else {
       // Value was undefined or not matched with available schema
-      parsedValues[key] = null;
+      if (!nonNullableTypes(valueType))
+        parsedValues[key] = null;
     }
   });
   return parsedValues;
