@@ -10,7 +10,7 @@ At the first time I wonder how could I make my JSON to be more manageable. So co
 
 Then I do research and no one module is available to fit in with my case, so I built this one.
 
-**JKT** is a simple **Javascript** module when you need a structure for your JSON. It's just a simple parser to handle the types, JSON structure and provide a small helper to handle the data.
+**JKT** is a simple **Javascript** module to create a structure for your JSON. It's basically just a simple parser to handle property types, the structure and provide a small helper to handle the data.
 
 ### Prerequisites
 
