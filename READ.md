@@ -69,17 +69,17 @@ const Person = jkt`
 | Type        | Description                                                   | Show on Invalid? | Show on JSON result |
 | ----------- | ------------------------------------------------------------- | ---------------- | ------------------- |
 | `String`    | String type value                                             | Yes              | Yes                 |
-| `String!`   | Force to only accept string value                             | No               | Yes                 |
+| `String!`   | Force to only accept string value                             | No               | No                 |
 | `Number`    | Numeric type value, works for either Integer or Float         | Yes              | Yes                 |
-| `Number!`   | Force to only accept numeric value                            | No               | Yes                 |
+| `Number!`   | Force to only accept numeric value                            | No               | No                 |
 | `Boolean`   | Boolean type value, works for either Integer or Float         | Yes              | Yes                 |
-| `Boolean!`  | Force to only accept boolean value                            | No               | Yes                 |
+| `Boolean!`  | Force to only accept boolean value                            | No               | No                 |
 | `Date`      | Date type value that accept `ISO 8601`, supported by `Moment` | Yes              | Yes                 |
-| `Date!`     | Force to only accept valid date value                         | No               | Yes                 |
+| `Date!`     | Force to only accept valid date value                         | No               | No                 |
 | `Array`     | Array type value                                              | Yes              | Yes                 |
-| `Array!`    | Force to only accept array value                              | No               | Yes                 |
+| `Array!`    | Force to only accept array value                              | No               | No                 |
 | `Object`    | Object type value                                             | Yes              | Yes                 |
-| `Object!`   | Force to only accept object value                             | No               | Yes                 |
+| `Object!`   | Force to only accept object value                             | No               | No                 |
 | `Function`  | Function type value                                           | No               | No                  |
 | `Function!` | Force to only accept function                                 | No               | No                  |
 | `ANY`       | Any type value will be valid                                  | Yes              | Yes                 |
@@ -95,17 +95,98 @@ const aditya = Person({
   birthday: '1991-06-18' // ISO 8601
 })
 
-// now aditya is instance of the Person
+// now aditya is the instance of Person
 ```
 
-Then you could make `aditya` to produce valid JSON format
+Then you could use `aditya` properties or produce valid JSON format from it
 
 ```
+aditya.name // "Aditya Kresna"
+aditya.birthday // moment time
 aditya.toJSON() // produce valid json format
 aditya.j() // the shorthand method
 ```
 
-[see the result on runkit](https://runkit.com/zeandcode/jkt-basic)
+One thing that you should know is if JKT fails to identify type of the value, it will returning `null` as a default, except you use **force** type like `String!` and `Number!` 
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/jkt-basic)**
+
+### One Line vs Multi Line
+
+There is a few method you can follow while making a struct, **One Line** and **Multi Line**. If you think your struct object is short and don't wanna make more space with using multi lines, you could simply create a struct separated by comma `,`.
+
+```
+const Animal = jkt`type: String, color: String, isWild: Boolean`
+```
+
+or by multiple lines like this
+
+```
+const Animal = jkt`
+  type: String
+  color: String
+  isWild: Boolean
+`
+
+const Animal2 = jkt`
+  type: String,
+  color: String,
+  beast: Boolean
+`
+
+const Animal3 = jkt`
+  type: String!,
+  color: String!,
+  beast: Boolean
+`
+```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/jkt-one-line-vs-multi-line)**
+
+### Custom Predefined Value
+
+When you need to setup custom value upfront, without checking it's type or doing some validations, You could use it as a predefined value by put them inside of expression `${}`. Predefined value is the value you define when defining the struct.
+
+```
+const Mother = jkt`
+  name: String
+  birthday: Date
+  haveChild: ${true}
+`
+
+const angela = Mother({
+  name: "Angela", 
+  Birthday: "1990-06-06"
+})
+
+const christy = Mother({
+  name: "Angela", 
+  Birthday: "1990-06-06",
+  haveChild: false
+})
+
+const Person = jkt`
+  name: String
+  sayTheWords: ${(words) => `Hi, ${words}`},
+  someOptions: ${{some: "options"}}
+`
+
+const aditya = Person({
+  name: "Aditya"
+})
+
+console.log(angela.haveChild) // true
+console.log(christy.haveChild) // false
+
+console.log(aditya.sayTheWords('How are you')) // "Hi, How are you"
+
+console.log('Aditya in JSON', aditya.j()) 
+// "Aditya in JSON", { name: "Aditya", someOptions: { some: "options" } }
+```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/custom-predefined-value)**
+
+You could pass anything you want, but if you pass a `function` for example, it will not showing on the output when you calling `toJSON` or `j` function, because the value wasn't a valid JSON type.
 
 ## Authors
 
