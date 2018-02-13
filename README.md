@@ -205,11 +205,13 @@ const Driver = Person`
   useCar: Boolean
 `
 
-const doctor = Person`
+const Doctor = Person`
   specialist: String
   hospitalLocation: String
 `
 ```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/extending-struct)**
 
 Both of `Driver` and `Doctor` is a child of `Person`, so you will get the `name`, `age`, `hobby` and `birthday` properties when you do parse of the `driver` and `doctor` instance.
 
@@ -230,6 +232,8 @@ const Child = Person`
   drinkBeer: !DELETE   // this "drinkBeer" will be deleted on child struct
 `
 ```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/removing-parent-property)**
 
 ### Check The Instance and Child
 
@@ -254,12 +258,14 @@ const John = Child({
   name: "John Doe"
 })
 
-child.childOf(person) // true
-mother.childOf(person) // true
+Child.childOf(Person) // true
+Mother.childOf(Person) // true
 
-John.instanceOf(person) // true
-John.instanceOf(child) // true
+John.instanceOf(Person) // true
+John.instanceOf(Child) // true
 ```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/check-the-instance-and-child)**
 
 ### Strict Types
 
@@ -276,6 +282,8 @@ const John = Person({ name: "John Doe", age: "not sure"})
 
 John.j() // { name: "John Doe" }
 ```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/strict-types)**
 
 ### ENUM Value
 
@@ -303,9 +311,11 @@ Colors() // { RED: 'Maroon', WHITE: 'WHITE', BLUE: 'just blue' }
 TSize() // { SMALL: 'SMALL', MEDIUM: 'MEDIUM', LARGE: 'LARGE', EXTRA_LARGE: 'EXTRA-LARGE' }
 
 
-// Callling enum from struct
+// Callling enum from struct using "E" property
 TShirt.E.COLOR.RED // "Maroon"
 ```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/enum-value)**
 
 The `E` stands for the collection of the ENUM on `TShirt`. If you want to see complete values of ENUM just take the `E` property.
 
@@ -333,12 +343,12 @@ SchoolClass.schema
 
 /**
 {
-  name: 'String',
-  grade: 'Number',
+  name: "String",
+  grade: "Number",
   teacher: {
-    name: 'String',
-    age: 'Number',
-    birthday: 'Date'
+    name: "String",
+    age: "Number",
+    birthday: "Date"
   }
 }
 */
@@ -366,6 +376,8 @@ mySchoolClass.j()
 */
 ```
 
+**[> See the result on RunKit](https://runkit.com/zeandcode/nested-struct)**
+
 ### Array Container
 
 Container to keep our struct inside json array.
@@ -383,6 +395,8 @@ const SchoolClass = jkt`
   students: ${jkt.c.arr(Person)}
 `
 ```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/array-container)**
 
 ### Struct & Instance References
 
@@ -410,7 +424,7 @@ These are detailed function & properties you could use when using jkt struct. Yo
 | `j`              | To get valid json from the instance. This is a shorthand method of `toJSON`                                                     |
 | `toString`       | To get json string from the instance.                                                                                           |
 
-## Authors
+## Author
 
 * **Aditya Kresna Permana** - _Indonesia_ - [SlaveOfCode](https://github.com/slaveofcode)
 
@@ -421,5 +435,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * This module may have some limitation based on reserved naming of the methods and properties
-* Highly inspired with styled-components template literal
+* Highly inspired with styled-components style
 * This module may still buggy, make a pull request or make an issue if you found them.
