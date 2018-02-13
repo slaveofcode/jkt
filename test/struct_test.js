@@ -297,7 +297,6 @@ describe("Struct", () => {
       color: "String",
       beast: "Boolean",
     })
-    console.log(Animal4.schema)
     expect(Animal4.schema).to.deep.equal({
       type: "String!",
       color: "String!",
