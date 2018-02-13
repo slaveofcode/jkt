@@ -6,7 +6,7 @@ It's time to add a little salt to our JSON.
 
 ## Background
 
-At the first time I wonder how could I make my JSON to be more manageable. So confusing when everytime I checking up the right parameters to my function, make sure the produced JSON data are valid and parsing all over the JSON properties to follow my rules (types).
+At the first time I wonder how could I make my JSON to be more manageable. So confusing when every time I checking up the right parameters to my function, make sure the produced JSON data are valid and parsing all over the JSON properties to follow my rules (types).
 
 Then I do research and no one module is available to fit in with my case, so I built this one.
 
@@ -407,7 +407,7 @@ These are detailed function & properties you could use when using jkt struct. Yo
 | Name       | Type           | Description                                                                                                            |
 | ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `isJKT`    | Boolean (true) | Nothing special about this, just used to to identify JKT struct on internal parser.                                    |
-| `schema`   | JSON           | Schema of struct, you could inspect this property after definig the struct.                                            |
+| `schema`   | JSON           | Schema of struct, you could inspect this property after defining the struct.                                            |
 | `childOf`  | Function       | To check if the struct is a child of the given struct                                                                  |
 | `__id`     | String         | The id of struct, every struct has an unique id generated based on `shortid` library                                   |
 | `__schema` | JSON           | The dirty schema of the struct which used internally to parse value                                                    |
