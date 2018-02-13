@@ -17,7 +17,7 @@ Then I do research and no one module is available to fit in with my case, so I b
 To use JKT you need a NodeJS version `6.4.0` and up. Basically JKT really depends on ES6 style which using template literal in practice.
 
 ```
-const jkt = require('jkt')
+const jkt = require('jkt') // CommonJs
 
 const Person = jkt`
   name: String
