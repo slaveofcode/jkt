@@ -2,7 +2,7 @@
 
 # JKT Parser
 
-It's time to add a little salt for your JSON.
+It's time to add a little salt to our JSON.
 
 ## Getting Started
 
