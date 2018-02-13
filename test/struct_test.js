@@ -263,6 +263,47 @@ describe("Struct", () => {
     expect(someHuman.childOf(person)).to.be.true;
     expect(someHuman.childOf(mother)).to.be.true;
   });
+  it('should able to parse with forced rules', () => {
+    const Animal = jkt`type: String, color: String, beast: Boolean`
+    const Animal2 = jkt`
+      type: String
+      color: String
+      beast: Boolean
+    `
+    const Animal3 = jkt`
+      type: String,
+      color: String,
+      beast: Boolean
+    `
+
+    const Animal4 = jkt`
+      type: String!
+      color: String!
+      beast: Boolean
+    `
+
+    expect(Animal.schema).to.deep.equal({
+      type: "String",
+      color: "String",
+      beast: "Boolean",
+    })
+    expect(Animal2.schema).to.deep.equal({
+      type: "String",
+      color: "String",
+      beast: "Boolean",
+    })
+    expect(Animal3.schema).to.deep.equal({
+      type: "String",
+      color: "String",
+      beast: "Boolean",
+    })
+    console.log(Animal4.schema)
+    expect(Animal4.schema).to.deep.equal({
+      type: "String!",
+      color: "String!",
+      beast: "Boolean",
+    })
+  })
   it("should be able to handle values with container", () => {
     const person = jkt`
       name: String
