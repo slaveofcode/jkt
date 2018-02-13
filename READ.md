@@ -4,7 +4,7 @@
 
 It's time to add a little salt to our JSON.
 
-## Getting Started
+## Background
 
 At the first time I wonder how could I make my JSON to be more manageable. So confusing when everytime I checking up the right parameters to my function, make sure the produced JSON data are valid and parsing all over the JSON properties to follow my rules (types).
 
