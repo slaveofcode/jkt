@@ -53,7 +53,7 @@ The test is very very simple, you just have to clone the project, do `npm instal
 
 ### Struct
 
-You just have to define the JKT struct once and then you could rely on them for the rest of the day. The struct is defined by using template literal.
+You just have to define the JKT struct once and then you could rely on them. The struct is defined by using template literal.
 
 ```
 const Person = jkt`
