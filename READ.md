@@ -23,7 +23,7 @@ const Person = jkt`
   name: String
   age: Number
   birthday: Date
-  Hobbies: Array
+  hobbies: Array
 `
 ```
 
