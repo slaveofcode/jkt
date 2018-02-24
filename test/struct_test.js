@@ -710,7 +710,7 @@ describe("Struct", () => {
     expect(nina.age).to.equal(25);
     expect(nina.birthday).to.equal("SOme date");
   });
-  it.only("should be able use mapping key which coming from another supplied key", () => {
+  it("should be able use mapping key which coming from another supplied key", () => {
     const Person = jkt`
       name: String
       age: Number
