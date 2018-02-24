@@ -24,8 +24,8 @@ Simple helper to parse your JSON.
     * [ENUM Value](#enum-value)
     * [Nested Struct](#nested-struct)
     * [Array Container](#array-container)
-  * [Custom Value Translator](#custom-value-translator)
-  * [Arrow Mapping Key -> Values](#arrow-mapping-key---values)
+    * [Custom Value Translator](#custom-value-translator)
+    * [Arrow Mapping Key -> Values](#arrow-mapping-key---values)
     * [Struct & Instance References](#struct--instance-references)
     * [Struct Property & Function](#struct-property--function)
     * [Instance Function](#instance-function)
@@ -431,7 +431,7 @@ const SchoolClass = jkt`
 
 **[> See the result on RunKit](https://runkit.com/zeandcode/array-container)**
 
-## Custom Value Translator
+### Custom Value Translator
 
 With all of provided parsers, I believe there is always not enough to cover up our desired types. So here's translator comes in.
 
@@ -454,7 +454,7 @@ nina.j().birthday // "I'm old man =,="
 
 **[> See the result on RunKit](https://runkit.com/zeandcode/translator-custom-value)**
 
-## Arrow Mapping Key -> Values
+### Arrow Mapping Key -> Values
 
 With mapping you could reuse key-value on supplied json to make your own custom key based on that source.
 
