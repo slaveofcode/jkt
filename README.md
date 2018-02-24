@@ -2,7 +2,38 @@
 
 # JKT Parser
 
-It's time to add a little salt to our JSON.
+Simple helper to parse your JSON.
+
+<!-- TOC -->
+
+* [JKT Parser](#jkt-parser)
+  * [Background](#background)
+    * [Requirements](#requirements)
+    * [Installing](#installing)
+  * [Running the tests](#running-the-tests)
+  * [API References](#api-references)
+    * [Struct](#struct)
+    * [Available Types](#available-types)
+    * [Instance of Struct](#instance-of-struct)
+    * [One Line vs Multi Line](#one-line-vs-multi-line)
+    * [Custom Predefined Value](#custom-predefined-value)
+    * [Extending Struct](#extending-struct)
+    * [Removing Parent Property](#removing-parent-property)
+    * [Check The Instance and Child](#check-the-instance-and-child)
+    * [Strict Types](#strict-types)
+    * [ENUM Value](#enum-value)
+    * [Nested Struct](#nested-struct)
+    * [Array Container](#array-container)
+  * [Custom Value Translator](#custom-value-translator)
+  * [Arrow Mapping Key -> Values](#arrow-mapping-key---values)
+    * [Struct & Instance References](#struct--instance-references)
+    * [Struct Property & Function](#struct-property--function)
+    * [Instance Function](#instance-function)
+  * [Author](#author)
+  * [License](#license)
+  * [Acknowledgments](#acknowledgments)
+
+<!-- /TOC -->
 
 ## Background
 
@@ -12,7 +43,7 @@ Then I do research and no one module is available to fit in with my case, so I b
 
 **JKT** is a simple **Javascript** module to create a structure for your JSON. It's basically just a simple parser to handle property types, the structure and provide a small helper to handle the data.
 
-### Prerequisites
+### Requirements
 
 To use JKT you need a NodeJS version `6.4.0` and up. Basically JKT really depends on ES6 style which using template literal in practice.
 
@@ -66,23 +97,25 @@ const Person = jkt`
 
 ### Available Types
 
-| Type        | Description                                                   | Show on Invalid? | Show on JSON result |
-| ----------- | ------------------------------------------------------------- | ---------------- | ------------------- |
-| `String`    | String type value                                             | Yes              | Yes                 |
-| `String!`   | Force to only accept string value                             | No               | No                  |
-| `Number`    | Numeric type value, works for either Integer or Float         | Yes              | Yes                 |
-| `Number!`   | Force to only accept numeric value                            | No               | No                  |
-| `Boolean`   | Boolean type value, works for either Integer or Float         | Yes              | Yes                 |
-| `Boolean!`  | Force to only accept boolean value                            | No               | No                  |
-| `Date`      | Date type value that accept `ISO 8601`, supported by `Moment` | Yes              | Yes                 |
-| `Date!`     | Force to only accept valid date value                         | No               | No                  |
-| `Array`     | Array type value                                              | Yes              | Yes                 |
-| `Array!`    | Force to only accept array value                              | No               | No                  |
-| `Object`    | Object type value                                             | Yes              | Yes                 |
-| `Object!`   | Force to only accept object value                             | No               | No                  |
-| `Function`  | Function type value                                           | No               | No                  |
-| `Function!` | Force to only accept function                                 | No               | No                  |
-| `ANY`       | Any type value will be valid                                  | Yes              | Yes                 |
+| Type         | Description                                                                                                                                      | Show on Invalid? | Show on JSON result |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- | ------------------- |
+| `String`     | String type value                                                                                                                                | Yes              | Yes                 |
+| `String!`    | Force to only accept string value                                                                                                                | No               | No                  |
+| `Number`     | Numeric type value, works for either Integer or Float                                                                                            | Yes              | Yes                 |
+| `Number!`    | Force to only accept numeric value                                                                                                               | No               | No                  |
+| `Boolean`    | Boolean type value, works for either Integer or Float                                                                                            | Yes              | Yes                 |
+| `Boolean!`   | Force to only accept boolean value                                                                                                               | No               | No                  |
+| `Date`       | Date type value that accept `ISO 8601`, supported by `Moment` and it is timezone aware (will convert to UTC time) based on your machine timezone | Yes              | Yes                 |
+| `Date!`      | Force to only accept valid date value and will produce timezone aware date                                                                       | No               | No                  |
+| `DatePlain`  | Date type value that accept `ISO 8601`, supported by `Moment` and it is not timezone aware                                                       | Yes              | Yes                 |
+| `DatePlain!` | Force to only accept valid date value and will not produce timezone aware date                                                                   | No               | No                  |
+| `Array`      | Array type value                                                                                                                                 | Yes              | Yes                 |
+| `Array!`     | Force to only accept array value                                                                                                                 | No               | No                  |
+| `Object`     | Object type value                                                                                                                                | Yes              | Yes                 |
+| `Object!`    | Force to only accept object value                                                                                                                | No               | No                  |
+| `Function`   | Function type value                                                                                                                              | No               | No                  |
+| `Function!`  | Force to only accept function                                                                                                                    | No               | No                  |
+| `ANY`        | Any type value will be valid                                                                                                                     | Yes              | Yes                 |
 
 ### Instance of Struct
 
@@ -400,7 +433,7 @@ const SchoolClass = jkt`
 
 ## Custom Value Translator
 
-With all of provided features, I believe there is always not enough to cover up our bussiness with it. So here's translator comes in.
+With all of provided parsers, I believe there is always not enough to cover up our desired types. So here's translator comes in.
 
 ```
 const Person = jkt`
@@ -420,6 +453,35 @@ nina.j().birthday // "I'm old man =,="
 ```
 
 **[> See the result on RunKit](https://runkit.com/zeandcode/translator-custom-value)**
+
+## Arrow Mapping Key -> Values
+
+With mapping you could reuse key-value on supplied json to make your own custom key based on that source.
+
+```
+const Person = jkt`
+  name: String
+  name->full_name: String // mapping from source key (name) to new key (full_name)
+  address: String
+  address->address2: String // mapping from source key (address) to new key (address2)
+  age: Number
+  age->ageInString: String // mapping from source key (age) to new key (ageInString) with type String
+`
+
+const aditya = Person({
+  name: "Aditya",
+  age: "27",
+  address: "Kota Bekasi"
+});
+
+aditya.name // "Aditya"
+aditya.full_name // "Aditya"
+aditya.address2 // "Kota Bekasi"
+aditya.age // 27
+aditya.ageInString // "27"
+```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/arrow-mapping)**
 
 ### Struct & Instance References
 

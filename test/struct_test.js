@@ -687,7 +687,7 @@ describe("Struct", () => {
     expect(functionParse).to.not.throw();
     expect(anyParse).to.not.throw();
   });
-  it("should be ablet to use translator object", () => {
+  it("should be able to use translator object", () => {
     const Person = jkt`
       name: String
       age: Number
@@ -709,5 +709,56 @@ describe("Struct", () => {
     expect(nina.name).to.equal("Nina");
     expect(nina.age).to.equal(25);
     expect(nina.birthday).to.equal("SOme date");
+  });
+  it("should be able use mapping key which coming from another supplied key", () => {
+    const Person = jkt`
+      name: String
+      age: Number
+      birthday: DatePlain
+      birthday->happyDay: DatePlain
+    `;
+
+    const RandomObject = jkt`
+      name->someName: String
+      age->someAge: Number
+      age->myAge: String
+      birthday->bornDay: DatePlain
+    `;
+
+    const nina = Person({
+      name: "Nina",
+      age: "25",
+      birthday: "1991-06-18"
+    });
+
+    const randObj = RandomObject({
+      name: "Nikola Tesla",
+      age: "27",
+      birthday: "1991-06-18"
+    });
+
+    expect(nina.j()).to.deep.equals({
+      name: "Nina",
+      age: 25,
+      birthday: "1991-06-18T00:00:00.000Z",
+      happyDay: "1991-06-18T00:00:00.000Z"
+    });
+
+    expect(randObj.j()).to.deep.equals({
+      someName: "Nikola Tesla",
+      someAge: 27,
+      myAge: "27",
+      bornDay: "1991-06-18T00:00:00.000Z"
+    });
+
+    expect(nina.name).to.equal("Nina");
+    expect(nina.age).to.equal(25);
+    expect(nina.birthday.toJSON()).to.equal("1991-06-18T00:00:00.000Z");
+    expect(nina.happyDay.toJSON()).to.equal("1991-06-18T00:00:00.000Z");
+
+    expect(randObj.someName).to.equal("Nikola Tesla");
+    expect(randObj.someAge).to.equal(27);
+    expect(randObj.myAge).to.equal("27");
+    expect(randObj.bornDay.toJSON()).to.equal("1991-06-18T00:00:00.000Z");
   });
 });

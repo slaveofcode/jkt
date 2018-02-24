@@ -60,6 +60,8 @@ const isTranslatorObject = valueType => {
   return isTranslator && hasTranslateFunc;
 };
 
+const hasMappingKey = key => /[a-zA-Z0-9\_]+\-\>[a-zA-Z0-9\_]+/g.test(key);
+
 module.exports = {
   isArray,
   isObject,
@@ -77,5 +79,6 @@ module.exports = {
   isStringFloat,
   isJKTObject,
   isENUMObject,
-  isTranslatorObject
+  isTranslatorObject,
+  hasMappingKey
 };

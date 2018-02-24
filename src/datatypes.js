@@ -24,6 +24,8 @@ const NUMBER = "Number";
 const NUMBER_ONLY = `${NUMBER}!`;
 const DATE = "Date";
 const DATE_ONLY = `${DATE}!`;
+const DATE_PLAIN = "DatePlain";
+const DATE_PLAIN_ONLY = `${DATE}!`;
 const BOOLEAN = "Boolean";
 const BOOLEAN_ONLY = `${BOOLEAN}!`;
 const OBJECT = "Object";
@@ -35,9 +37,17 @@ const FUNCTION_ONLY = `${FUNCTION}!`;
 const ANY = "Any";
 
 const parserableTypes = typeName =>
-  [STRING, ARRAY, BOOLEAN, DATE, FUNCTION, NUMBER, OBJECT, ANY].includes(
-    typeName
-  );
+  [
+    STRING,
+    ARRAY,
+    BOOLEAN,
+    DATE,
+    DATE_PLAIN,
+    FUNCTION,
+    NUMBER,
+    OBJECT,
+    ANY
+  ].includes(typeName);
 
 const nonNullableTypes = typeName =>
   [
@@ -45,6 +55,7 @@ const nonNullableTypes = typeName =>
     ARRAY_ONLY,
     BOOLEAN_ONLY,
     DATE_ONLY,
+    DATE_PLAIN_ONLY,
     FUNCTION_ONLY,
     NUMBER_ONLY,
     OBJECT_ONLY
@@ -59,7 +70,9 @@ const isPredefinedTypes = valueType =>
   isError(valueType) ||
   isNull(valueType) ||
   isNumber(valueType) ||
-  (isString(valueType) && !nonNullableTypes(valueType) && !parserableTypes(valueType));
+  (isString(valueType) &&
+    !nonNullableTypes(valueType) &&
+    !parserableTypes(valueType));
 
 const hasValidTypes = schema => {
   let valid = true;
@@ -93,6 +106,8 @@ module.exports = {
   NUMBER_ONLY,
   DATE,
   DATE_ONLY,
+  DATE_PLAIN,
+  DATE_PLAIN_ONLY,
   BOOLEAN,
   BOOLEAN_ONLY,
   OBJECT,
