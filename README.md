@@ -2,7 +2,38 @@
 
 # JKT Parser
 
-It's time to add a little salt to our JSON.
+Simple helper to parse your JSON.
+
+<!-- TOC -->
+
+* [JKT Parser](#jkt-parser)
+  * [Background](#background)
+    * [Requirements](#requirements)
+    * [Installing](#installing)
+  * [Running the tests](#running-the-tests)
+  * [API References](#api-references)
+    * [Struct](#struct)
+    * [Available Types](#available-types)
+    * [Instance of Struct](#instance-of-struct)
+    * [One Line vs Multi Line](#one-line-vs-multi-line)
+    * [Custom Predefined Value](#custom-predefined-value)
+    * [Extending Struct](#extending-struct)
+    * [Removing Parent Property](#removing-parent-property)
+    * [Check The Instance and Child](#check-the-instance-and-child)
+    * [Strict Types](#strict-types)
+    * [ENUM Value](#enum-value)
+    * [Nested Struct](#nested-struct)
+    * [Array Container](#array-container)
+  * [Custom Value Translator](#custom-value-translator)
+  * [Arrow Mapping Key -> Values](#arrow-mapping-key---values)
+    * [Struct & Instance References](#struct--instance-references)
+    * [Struct Property & Function](#struct-property--function)
+    * [Instance Function](#instance-function)
+  * [Author](#author)
+  * [License](#license)
+  * [Acknowledgments](#acknowledgments)
+
+<!-- /TOC -->
 
 ## Background
 
@@ -12,7 +43,7 @@ Then I do research and no one module is available to fit in with my case, so I b
 
 **JKT** is a simple **Javascript** module to create a structure for your JSON. It's basically just a simple parser to handle property types, the structure and provide a small helper to handle the data.
 
-### Prerequisites
+### Requirements
 
 To use JKT you need a NodeJS version `6.4.0` and up. Basically JKT really depends on ES6 style which using template literal in practice.
 
@@ -423,7 +454,7 @@ nina.j().birthday // "I'm old man =,="
 
 **[> See the result on RunKit](https://runkit.com/zeandcode/translator-custom-value)**
 
-## Mapping Values
+## Arrow Mapping Key -> Values
 
 With mapping you could reuse key-value on supplied json to make your own custom key based on that source.
 
@@ -450,7 +481,7 @@ aditya.age // 27
 aditya.ageInString // "27"
 ```
 
-**[> See the result on RunKit](https://runkit.com/zeandcode/mapping-values)**
+**[> See the result on RunKit](https://runkit.com/zeandcode/arrow-mapping)**
 
 ### Struct & Instance References
 
