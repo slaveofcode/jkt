@@ -167,7 +167,7 @@ describe("Struct", () => {
       }
     });
   });
-  it('should be able to show default values of nested struct', () => {
+  it("should be able to show default values of nested struct", () => {
     const hobby = jkt`
       name: String
       cost: Number
@@ -191,19 +191,19 @@ describe("Struct", () => {
       name: String
       strict: Boolean
       needReferee: Boolean!
-    `
+    `;
 
     const sport = jkt`
       fieldSize: Number
       needMultipleTeam: Boolean!
       rule: ${sportRule}
-    `
+    `;
 
     const father = jkt`
       gender: String
       loveSport: Boolean
       sport: ${sport}
-    `
+    `;
 
     const motherValues = mother({});
     const fatherValues = father({});
@@ -234,8 +234,8 @@ describe("Struct", () => {
           strict: null
         }
       }
-    })
-  })
+    });
+  });
   it("should be able to check instance and parent", () => {
     const person = jkt`
       name: String
@@ -263,46 +263,46 @@ describe("Struct", () => {
     expect(someHuman.childOf(person)).to.be.true;
     expect(someHuman.childOf(mother)).to.be.true;
   });
-  it('should able to parse with forced rules', () => {
-    const Animal = jkt`type: String, color: String, beast: Boolean`
+  it("should able to parse with forced rules", () => {
+    const Animal = jkt`type: String, color: String, beast: Boolean`;
     const Animal2 = jkt`
       type: String
       color: String
       beast: Boolean
-    `
+    `;
     const Animal3 = jkt`
       type: String,
       color: String,
       beast: Boolean
-    `
+    `;
 
     const Animal4 = jkt`
       type: String!
       color: String!
       beast: Boolean
-    `
+    `;
 
     expect(Animal.schema).to.deep.equal({
       type: "String",
       color: "String",
-      beast: "Boolean",
-    })
+      beast: "Boolean"
+    });
     expect(Animal2.schema).to.deep.equal({
       type: "String",
       color: "String",
-      beast: "Boolean",
-    })
+      beast: "Boolean"
+    });
     expect(Animal3.schema).to.deep.equal({
       type: "String",
       color: "String",
-      beast: "Boolean",
-    })
+      beast: "Boolean"
+    });
     expect(Animal4.schema).to.deep.equal({
       type: "String!",
       color: "String!",
-      beast: "Boolean",
-    })
-  })
+      beast: "Boolean"
+    });
+  });
   it("should be able to handle values with container", () => {
     const person = jkt`
       name: String
@@ -686,5 +686,28 @@ describe("Struct", () => {
     expect(objectParse).to.not.throw();
     expect(functionParse).to.not.throw();
     expect(anyParse).to.not.throw();
+  });
+  it("should be ablet to use translator object", () => {
+    const Person = jkt`
+      name: String
+      age: Number
+      birthday: ${jkt.trans.custom(value => "SOme date")}
+    `;
+
+    const nina = Person({
+      name: "Nina",
+      age: "25",
+      birthday: new Date()
+    });
+
+    expect(nina.j()).to.deep.equals({
+      name: "Nina",
+      age: 25,
+      birthday: "SOme date"
+    });
+
+    expect(nina.name).to.equal("Nina");
+    expect(nina.age).to.equal(25);
+    expect(nina.birthday).to.equal("SOme date");
   });
 });
