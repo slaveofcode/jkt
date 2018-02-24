@@ -40,7 +40,7 @@ const splitter = (strict = false) => {
       // Replacing all new lines with comma
       const preparedStr = stmt.replace(/(\r\n|\n|\r)/gm, delimiter);
 
-      const rex = /\s*([a-zA-Z0-9\_]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
+      const rex = /\s*([a-zA-Z0-9\_\-\>]+\s*\:\s*[\!a-zA-Z]*\s*\,*[\r\n]*)/g;
       const splittedStr = preparedStr.split(rex);
 
       const removedCommaTrailSpcs = removeCommaAndTrailingSpaces(splittedStr);

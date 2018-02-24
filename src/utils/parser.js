@@ -1,8 +1,10 @@
 "use strict";
 
+const loGet = require("lodash/get");
 const loValues = require("lodash/values");
 const moment = require("moment");
 const detector = require("./detector");
+const extractMapKey = require("./mapkey_extractor");
 const {
   STRING,
   STRING_ONLY,
@@ -12,6 +14,8 @@ const {
   BOOLEAN_ONLY,
   DATE,
   DATE_ONLY,
+  DATE_PLAIN,
+  DATE_PLAIN_ONLY,
   FUNCTION,
   FUNCTION_ONLY,
   NUMBER,
@@ -35,9 +39,26 @@ const parser = {
   [DATE]: val => {
     if (detector.isDate(val)) return val;
     if (detector.isString(val)) {
-      // detect ISO 8601
-      const date = moment(val);
-      if (date.isValid()) return date;
+      try {
+        // detect ISO 8601
+        const date = moment(val);
+        if (date.isValid()) return date;
+      } catch (err) {
+        return null;
+      }
+    }
+    return null;
+  },
+  [DATE_PLAIN]: val => {
+    if (detector.isDate(val)) return val;
+    if (detector.isString(val)) {
+      try {
+        // detect ISO 8601
+        const date = moment.utc(val); // unaware timezone, all parses with utc timezone
+        if (date.isValid()) return date;
+      } catch (err) {
+        return null;
+      }
     }
     return null;
   },
@@ -58,6 +79,7 @@ const nonNullableChecker = {
   [ARRAY_ONLY]: val => detector.isArray(val),
   [BOOLEAN_ONLY]: val => detector.isBoolean(val),
   [DATE_ONLY]: val => detector.isDate(val),
+  [DATE_PLAIN_ONLY]: val => detector.isDate(val),
   [FUNCTION_ONLY]: val => detector.isFunction(val),
   [NUMBER_ONLY]: val => {
     if (!isNaN(val)) {
@@ -74,6 +96,7 @@ const nonNullableParser = {
   [ARRAY_ONLY]: val => parser[ARRAY](val),
   [BOOLEAN_ONLY]: val => parser[BOOLEAN](val),
   [DATE_ONLY]: val => parser[DATE](val),
+  [DATE_PLAIN_ONLY]: val => parser[DATE_PLAIN](val),
   [FUNCTION_ONLY]: val => parser[FUNCTION](val),
   [NUMBER_ONLY]: val => parser[NUMBER](val),
   [OBJECT_ONLY]: val => parser[OBJECT](val)
@@ -83,9 +106,14 @@ const valueParser = (schema, valuesToParse) => {
   const parsedValues = {};
   Object.keys(schema).forEach(key => {
     const valueType = schema[key];
+
+    const [srcKey, mapKey] = extractMapKey(key);
+    if (mapKey !== null) key = mapKey;
+
     const value = detector.isUndefined(valuesToParse)
-      ? detector.isUndefined
-      : valuesToParse[key];
+      ? valuesToParse
+      : valuesToParse[srcKey !== null ? srcKey : key];
+
     if (!detector.isUndefined(value) || detector.isJKTObject(valueType)) {
       if (parserableTypes(valueType) && !detector.isJKTObject(valueType)) {
         parsedValues[key] = parser[valueType](value);
