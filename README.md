@@ -398,6 +398,29 @@ const SchoolClass = jkt`
 
 **[> See the result on RunKit](https://runkit.com/zeandcode/array-container)**
 
+## Custom Value Translator
+
+With all of provided features, I believe there is always not enough to cover up our bussiness with it. So here's translator comes in.
+
+```
+const Person = jkt`
+  name: String
+  age: Number
+  birthday: ${jkt.trans.custom(val => "I'm old man =,=")}
+`
+
+const nina = Person({
+  name: "Nina",
+  age: "25",
+  birthday: new Date() // this will produce "I'm old man =,="
+});
+
+nina.birthday // "I'm old man =,="
+nina.j().birthday // "I'm old man =,="
+```
+
+**[> See the result on RunKit](https://runkit.com/zeandcode/translator-custom-value)**
+
 ### Struct & Instance References
 
 These are detailed function & properties you could use when using jkt struct. You shouldn't use the following reserved words as a property for your struct, because it was reserved to support the module.
@@ -407,7 +430,7 @@ These are detailed function & properties you could use when using jkt struct. Yo
 | Name       | Type           | Description                                                                                                            |
 | ---------- | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `isJKT`    | Boolean (true) | Nothing special about this, just used to to identify JKT struct on internal parser.                                    |
-| `schema`   | JSON           | Schema of struct, you could inspect this property after defining the struct.                                            |
+| `schema`   | JSON           | Schema of struct, you could inspect this property after defining the struct.                                           |
 | `childOf`  | Function       | To check if the struct is a child of the given struct                                                                  |
 | `__id`     | String         | The id of struct, every struct has an unique id generated based on `shortid` library                                   |
 | `__schema` | JSON           | The dirty schema of the struct which used internally to parse value                                                    |

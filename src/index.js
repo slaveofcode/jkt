@@ -4,6 +4,7 @@ const extendBuilder = require("./extender");
 const Splitter = require("./splitter");
 const utils = require("./utils");
 const container = require("./container");
+const translator = require("./translator");
 const { isDeleteProperty, hasValidTypes } = require("./datatypes");
 const {
   hasReservedKeys,
@@ -97,59 +98,5 @@ const ENUM = (strings, ...bindings) => {
 module.exports = jkt;
 module.exports.Inst = inst;
 module.exports.c = container;
+module.exports.trans = translator;
 module.exports.ENUM = ENUM;
-
-/**
- * const { ENUM } = require('jkt')
- * const jkt = require('jkt')
- *
- * const Colors = ENUM`
- *  RED: Merah
- *  GREEN: Hijau
- * `
- *
- * OR
- *
- * const Colors = ENUM`RED: Merah, GREEN: Hijau`
- *
- * OR
- *
- * const Colors = ENUM`RED, GREEN`
- *
- * OR
- *
- * const Colors = ENUM`
- *  RED
- *  GREEN
- * `
- *
- * const fruit = jkt`
- *  name: String!
- *  price: Number!
- *  color: String!
- *  COLOR: ${Colors}
- * `
- *
- * fruit.COLOR.RED // callable before instantiation
- *
- *
- * const basket = jkt`
- *  ownerName: String
- *  orange: ${fruit}
- *  apple: ${fruit}!
- *  COLOR: ${Colors}
- * `
- *
- * basket.COLOR.GREEN
- *
- * const basket1 = basket({
- *  ownerName: 'Adit',
- *  orange: {
- *    name: 'orange',
- *    price: '5000',
- *    color: 'yellow'
- *  }
- * })
- *
- * basket1.orange.COLOR.RED
- */

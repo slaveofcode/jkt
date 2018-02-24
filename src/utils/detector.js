@@ -39,6 +39,7 @@ const isJKTObject = valueType => {
 
   return isJKT && hasSchema;
 };
+
 const isENUMObject = valueType => {
   let isENUM = false;
   let hasToJsonFunc = false;
@@ -49,6 +50,14 @@ const isENUMObject = valueType => {
   )
     hasToJsonFunc = true;
   return isENUM && hasToJsonFunc;
+};
+
+const isTranslatorObject = valueType => {
+  let isTranslator = false;
+  let hasTranslateFunc = false;
+  if (Object(valueType).hasOwnProperty("isJKTTRANSLATOR")) isTranslator = true;
+  if (Object(valueType).hasOwnProperty("translate")) hasTranslateFunc = true;
+  return isTranslator && hasTranslateFunc;
 };
 
 module.exports = {
@@ -67,5 +76,6 @@ module.exports = {
   isFloat,
   isStringFloat,
   isJKTObject,
-  isENUMObject
+  isENUMObject,
+  isTranslatorObject
 };

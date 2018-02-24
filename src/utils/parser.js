@@ -83,7 +83,9 @@ const valueParser = (schema, valuesToParse) => {
   const parsedValues = {};
   Object.keys(schema).forEach(key => {
     const valueType = schema[key];
-    const value = detector.isUndefined(valuesToParse) ? detector.isUndefined : valuesToParse[key];
+    const value = detector.isUndefined(valuesToParse)
+      ? detector.isUndefined
+      : valuesToParse[key];
     if (!detector.isUndefined(value) || detector.isJKTObject(valueType)) {
       if (parserableTypes(valueType) && !detector.isJKTObject(valueType)) {
         parsedValues[key] = parser[valueType](value);
@@ -94,6 +96,9 @@ const valueParser = (schema, valuesToParse) => {
         // handle enum
         const validEnumValues = loValues(valueType.j());
         parsedValues[key] = validEnumValues.includes(value) ? value : null;
+      } else if (detector.isTranslatorObject(valueType)) {
+        // handle translator
+        parsedValues[key] = valueType.translate(value);
       } else if (nonNullableTypes(valueType)) {
         if (nonNullableChecker[valueType](value))
           parsedValues[key] = nonNullableParser[valueType](value);
@@ -117,8 +122,7 @@ const valueParser = (schema, valuesToParse) => {
       }
     } else {
       // Value was undefined or not matched with available schema
-      if (!nonNullableTypes(valueType))
-        parsedValues[key] = null;
+      if (!nonNullableTypes(valueType)) parsedValues[key] = null;
     }
   });
   return parsedValues;
