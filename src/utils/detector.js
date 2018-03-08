@@ -29,7 +29,7 @@ const isError = comparator(ERROR_V);
 const isSymbol = comparator(SYMBOL_V);
 const isInt = num => Number(num) === num && num % 1 === 0;
 const isFloat = num => Number(num) === num && num % 1 !== 0;
-const isStringFloat = num => !isNaN(num) && num.toString().indexOf(".") != -1;
+const isStringFloat = num => !isNull(num) && !isFloat(num) && !isNaN(num) && num.toString().indexOf(".") != -1;
 const isJKTObject = valueType => {
   let isJKT = false;
   let hasSchema = false;

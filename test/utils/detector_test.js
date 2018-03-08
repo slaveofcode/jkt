@@ -1,7 +1,7 @@
 "use strict";
-
 const moment = require("moment");
 const chai = require("chai");
+const jkt = require(`${src}/index`);
 const detector = require(`${src}/utils/detector`);
 
 const expect = chai.expect;
@@ -101,5 +101,96 @@ describe("Util Detector", () => {
     expect(detector.isError({})).to.be.false;
     expect(detector.isError([])).to.be.false;
     expect(detector.isError(() => 'some value')).to.be.false;
+  })
+  it("should be able to check symbol type", () => {
+    expect(detector.isSymbol(Symbol('some key'))).to.be.true;
+    expect(detector.isSymbol(new Date())).to.be.false;
+    expect(detector.isSymbol(null)).to.be.false;
+    expect(detector.isSymbol('')).to.be.false;
+    expect(detector.isSymbol(937283)).to.be.false;
+    expect(detector.isSymbol(1234.546)).to.be.false;
+    expect(detector.isSymbol({})).to.be.false;
+    expect(detector.isSymbol([])).to.be.false;
+    expect(detector.isSymbol(() => 'some value')).to.be.false;
+  })
+  it("should be able to check integer type", () => {
+    expect(detector.isInt(12345)).to.be.true;
+    expect(detector.isInt(12345.678)).to.be.false;
+    expect(detector.isInt(new Date())).to.be.false;
+    expect(detector.isInt(null)).to.be.false;
+    expect(detector.isInt('')).to.be.false;
+    expect(detector.isInt({})).to.be.false;
+    expect(detector.isInt([])).to.be.false;
+    expect(detector.isInt(() => 'some value')).to.be.false;
+  })
+  it("should be able to check float type", () => {
+    expect(detector.isFloat(12345.678)).to.be.true;
+    expect(detector.isFloat(12345)).to.be.false;
+    expect(detector.isFloat(new Date())).to.be.false;
+    expect(detector.isFloat(null)).to.be.false;
+    expect(detector.isFloat('')).to.be.false;
+    expect(detector.isFloat({})).to.be.false;
+    expect(detector.isFloat([])).to.be.false;
+    expect(detector.isFloat(() => 'some value')).to.be.false;
+  })
+  it("should be able to check string with float number", () => {
+    expect(detector.isStringFloat('12345.678')).to.be.true;
+    expect(detector.isStringFloat(12345.678)).to.be.false;
+    expect(detector.isStringFloat(12345)).to.be.false;
+    expect(detector.isStringFloat(new Date())).to.be.false;
+    expect(detector.isStringFloat(null)).to.be.false;
+    expect(detector.isStringFloat('')).to.be.false;
+    expect(detector.isStringFloat({})).to.be.false;
+    expect(detector.isStringFloat([])).to.be.false;
+    expect(detector.isStringFloat(() => 'some value')).to.be.false;
+  })
+  it("should be able to check jkt object", () => {
+    const Person = jkt`name: String, age: Number`;
+
+    expect(detector.isJKTObject(Person)).to.be.true;
+    expect(detector.isJKTObject(12345.678)).to.be.false;
+    expect(detector.isJKTObject(12345)).to.be.false;
+    expect(detector.isJKTObject(new Date())).to.be.false;
+    expect(detector.isJKTObject(null)).to.be.false;
+    expect(detector.isJKTObject('')).to.be.false;
+    expect(detector.isJKTObject({})).to.be.false;
+    expect(detector.isJKTObject([])).to.be.false;
+    expect(detector.isJKTObject(() => 'some value')).to.be.false;
+  })
+  it("should be able to check enum object", () => {
+    const Colors = jkt.ENUM`red, green, blue`;
+    const Person = jkt`name: String, age: Number`;
+
+    expect(detector.isENUMObject(Colors)).to.be.true;
+    expect(detector.isENUMObject(Person)).to.be.false;
+    expect(detector.isENUMObject(12345.678)).to.be.false;
+    expect(detector.isENUMObject(12345)).to.be.false;
+    expect(detector.isENUMObject(new Date())).to.be.false;
+    expect(detector.isENUMObject(null)).to.be.false;
+    expect(detector.isENUMObject('')).to.be.false;
+    expect(detector.isENUMObject({})).to.be.false;
+    expect(detector.isENUMObject([])).to.be.false;
+    expect(detector.isENUMObject(() => 'some value')).to.be.false;
+  })
+  it("should be able to check translator object", () => {
+    const Person = jkt`name: String, age: Number`;
+    const Colors = jkt.ENUM`red, green, blue`;
+    const transFunc = jkt.trans.custom(name => `Hi ${name}, welcome to JKT`);
+    
+    expect(detector.isTranslatorObject(transFunc)).to.be.true;
+    expect(detector.isTranslatorObject(Person)).to.be.false;
+    expect(detector.isTranslatorObject(Colors)).to.be.false;
+    expect(detector.isTranslatorObject(12345.678)).to.be.false;
+    expect(detector.isTranslatorObject(12345)).to.be.false;
+    expect(detector.isTranslatorObject(new Date())).to.be.false;
+    expect(detector.isTranslatorObject(null)).to.be.false;
+    expect(detector.isTranslatorObject('')).to.be.false;
+    expect(detector.isTranslatorObject({})).to.be.false;
+    expect(detector.isTranslatorObject([])).to.be.false;
+    expect(detector.isTranslatorObject(() => 'some value')).to.be.false;
+  })
+  it('should detect mapping key pattern', () => {
+    const mappingStr = 'full_name->nick_name';
+    expect(detector.hasMappingKey(mappingStr)).to.be.true;
   })
 });
