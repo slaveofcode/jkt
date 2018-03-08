@@ -27,8 +27,8 @@ const isDate = comparator(DATE_V);
 const isUndefined = comparator(UNDEF_V);
 const isError = comparator(ERROR_V);
 const isSymbol = comparator(SYMBOL_V);
-const isInt = num => Number(num) === num && num % 1 === 0;
-const isFloat = num => Number(num) === num && num % 1 !== 0;
+const isInt = num => !isSymbol(num) && Number(num) === num && num % 1 === 0;
+const isFloat = num => !isSymbol(num) && Number(num) === num && num % 1 !== 0;
 const isStringFloat = num => !isNull(num) && !isFloat(num) && !isNaN(num) && num.toString().indexOf(".") != -1;
 const isJKTObject = valueType => {
   let isJKT = false;

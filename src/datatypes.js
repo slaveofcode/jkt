@@ -5,6 +5,9 @@ const loValues = require("lodash/values");
 const {
   isString,
   isNumber,
+  isFloat,
+  isInt,
+  isSymbol,
   isDate,
   isStringFloat,
   isUndefined,
@@ -15,7 +18,8 @@ const {
   isError,
   isNull,
   isENUMObject,
-  isJKTObject
+  isJKTObject,
+  isTranslatorObject
 } = require("./utils/detector");
 
 const STRING = "String";
@@ -70,6 +74,10 @@ const isPredefinedTypes = valueType =>
   isError(valueType) ||
   isNull(valueType) ||
   isNumber(valueType) ||
+  isFloat(valueType) ||
+  isInt(valueType) ||
+  isSymbol(valueType) ||
+  isTranslatorObject(valueType) ||
   (isString(valueType) &&
     !nonNullableTypes(valueType) &&
     !parserableTypes(valueType));
@@ -87,7 +95,12 @@ const hasValidTypes = schema => {
         isError(t) ||
         isNull(t) ||
         isNumber(t) ||
+        isString(t) ||
+        isInt(t) ||
+        isFloat(t) ||
+        isSymbol(t) ||
         isJKTObject(t) ||
+        isTranslatorObject(t) ||
         isENUMObject(t);
       if (!validPredefinedVal) {
         valid = false;
@@ -97,7 +110,7 @@ const hasValidTypes = schema => {
   return valid;
 };
 
-const isDeleteProperty = value => /\s*\!DELETE\s*/g.test(value);
+const isDeleteProperty = value => !isSymbol(value) && /\s*\!DELETE\s*/g.test(value);
 
 module.exports = {
   STRING,
