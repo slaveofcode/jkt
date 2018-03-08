@@ -2,6 +2,7 @@
 
 const loValues = require("lodash/values");
 const { isUndefined, isArray, isString } = require("./utils/detector");
+const { parserableTypes, nonNullableTypes, isDeleteProperty } = require('./datatypes')
 
 const deepClone = (cln, obj) => {
   for (const i in obj)
@@ -51,15 +52,23 @@ const splitter = (strict = false) => {
 
       cleanedBlocks.forEach(block => {
         const [key, typeName] = block.split(":");
+        
         pairs[key] =
           typeName.length > 0
             ? typeName.trim()
             : !isUndefined(bindings[bindIdx])
               ? deepClone(bindings[bindIdx])
               : bindings[bindIdx];
+        
+        // not using predefined-value detected
+        if (typeName.length > 0) {
+          const trimmedName = typeName.trim();
+          if (!(parserableTypes(trimmedName) || nonNullableTypes(trimmedName) || isDeleteProperty(trimmedName)))
+            throw new TypeError("Unknown type was given");
+        }
 
         // normalize array binding values
-        if (isArray(pairs[key]) && pairs[key].length > 0)
+        if (isArray(pairs[key]) && pairs[key].length === 1)
           pairs[key] = pairs[key][0];
 
         if (typeName.length === 0) bindIdx++;

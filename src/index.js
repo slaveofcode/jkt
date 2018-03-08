@@ -5,7 +5,7 @@ const Splitter = require("./splitter");
 const utils = require("./utils");
 const container = require("./container");
 const translator = require("./translator");
-const { isDeleteProperty, hasValidTypes } = require("./datatypes");
+const { isDeleteProperty } = require("./datatypes");
 const {
   hasReservedKeys,
   triggerErrorReservedKeys
@@ -80,7 +80,6 @@ const jkt = (strings, ...bindings) => {
   const __id = utils.generator.generateId();
   const schema = splitter(strings, bindings);
   if (hasReservedKeys(schema)) triggerErrorReservedKeys();
-  if (!hasValidTypes(schema)) throw new TypeError("Unknown type was given");
   return inst(__id, schema, utils.makeUtils(schema));
 };
 

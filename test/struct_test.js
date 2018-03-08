@@ -432,6 +432,20 @@ describe("Struct", () => {
       }
     });
   });
+  it("should be able to handle values with various predefined-value", () => {
+    const aditya = jkt`
+      name: ${'Aditya'}
+      age: ${25}
+      birthday: ${new Date()}
+      money: ${324432.23}
+      cards: ${['somecard', 'credit card', 'debit card']}
+      object: ${{name: 'dummy', example: 'just example'}}
+      nullval: ${null}
+      introvert: ${true}
+      ability: ${say => `hello ${say}`}
+      symbol: ${Symbol('something')}
+    `;
+  })
   it("should be able to create struct with enum", () => {
     const hobby = jkt.ENUM`
       biking
