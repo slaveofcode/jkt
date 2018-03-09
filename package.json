@@ -1,6 +1,6 @@
 {
   "name": "jkt",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "Simple and efficient library for JSON data structure",
   "main": "./src/index.js",
   "scripts": {
