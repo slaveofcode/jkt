@@ -775,4 +775,34 @@ describe("Struct", () => {
     expect(randObj.myAge).to.equal("27");
     expect(randObj.bornDay.toJSON()).to.equal("1991-06-18T00:00:00.000Z");
   });
+  it.only("should not produced deleted key on serialize", () => {
+    const Person = jkt`
+      name: String
+      age: Number
+      birthday: DatePlain
+      Hobby: String
+      Address: String
+    `;
+
+    const Animal = Person`
+      Address->cage: String
+      Hobby: !DELETE
+      Address: !DELETE
+    `
+
+    const Bird = Animal({
+      name: 'Birdie',
+      age: '1',
+      birthday: '2018-03-08',
+      Hobby: 'Flying',
+      Address: 'Jakarta'
+    })
+
+    expect(Bird.j()).to.deep.equals({
+      name: 'Birdie',
+      age: 1,
+      birthday: '2018-03-08T00:00:00.000Z',
+      cage: 'Jakarta'
+    });
+  });
 });

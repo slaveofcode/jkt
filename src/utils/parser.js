@@ -25,7 +25,8 @@ const {
   ANY,
   parserableTypes,
   nonNullableTypes,
-  isPredefinedTypes
+  isPredefinedTypes,
+  isDeleteProperty
 } = require("../datatypes");
 
 const parser = {
@@ -106,6 +107,7 @@ const valueParser = (schema, valuesToParse) => {
   const parsedValues = {};
   Object.keys(schema).forEach(key => {
     const valueType = schema[key];
+    if (isDeleteProperty(valueType)) return;
 
     const [srcKey, mapKey] = extractMapKey(key);
     if (mapKey !== null) key = mapKey;
