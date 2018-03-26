@@ -775,7 +775,7 @@ describe("Struct", () => {
     expect(randObj.myAge).to.equal("27");
     expect(randObj.bornDay.toJSON()).to.equal("1991-06-18T00:00:00.000Z");
   });
-  it.only("should not produced deleted key on serialize", () => {
+  it("should not produced deleted key on serialize", () => {
     const Person = jkt`
       name: String
       age: Number
