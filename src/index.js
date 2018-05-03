@@ -18,7 +18,7 @@ const descendantChecker = descendantsIds => {
   return struct => descendantsIds.includes(struct.__id[struct.__id.length - 1]);
 };
 
-const inst = (__id, schema, utils) => {
+const makeInstance = (__id, schema, utils) => {
   const structId = isArray(__id) ? __id : [__id];
   const cleanSchema = {}; // pure schema
   const dirtySchema = {}; // impure schema because it's including builtin jkt function
@@ -80,7 +80,11 @@ const jkt = (strings, ...bindings) => {
   const __id = utils.generator.generateId();
   const schema = splitter(strings, bindings);
   if (hasReservedKeys(schema)) triggerErrorReservedKeys();
-  return inst(__id, schema, utils.makeUtils(schema));
+  return makeInstance(__id, schema, utils.makeUtils(schema));
+};
+
+jkt.array = jktObj => {
+  return container.arr(jktObj);
 };
 
 const ENUM = (strings, ...bindings) => {
@@ -95,7 +99,7 @@ const ENUM = (strings, ...bindings) => {
 };
 
 module.exports = jkt;
-module.exports.Inst = inst;
+module.exports.Inst = makeInstance;
 module.exports.c = container;
 module.exports.trans = translator;
 module.exports.ENUM = ENUM;

@@ -323,7 +323,7 @@ describe("Struct", () => {
     const countryGroup = jkt`
       country: String
       groupOfPeople: ${people}
-      fruits: ${jkt.c.arr(fruit)}
+      fruits: ${jkt.c.arr(fruit, false, true)}
     `;
 
     const peopleStrict = jkt`
@@ -412,6 +412,7 @@ describe("Struct", () => {
       ]
     });
 
+    console.log(groupOfCountry.j());
     expect(groupOfCountry.j()).to.deep.equal({
       country: "Indonesia",
       fruits: [],
@@ -434,18 +435,18 @@ describe("Struct", () => {
   });
   it("should be able to handle values with various predefined-value", () => {
     const aditya = jkt`
-      name: ${'Aditya'}
+      name: ${"Aditya"}
       age: ${25}
       birthday: ${new Date()}
       money: ${324432.23}
-      cards: ${['somecard', 'credit card', 'debit card']}
-      object: ${{name: 'dummy', example: 'just example'}}
+      cards: ${["somecard", "credit card", "debit card"]}
+      object: ${{ name: "dummy", example: "just example" }}
       nullval: ${null}
       introvert: ${true}
       ability: ${say => `hello ${say}`}
-      symbol: ${Symbol('something')}
+      symbol: ${Symbol("something")}
     `;
-  })
+  });
   it("should be able to create struct with enum", () => {
     const hobby = jkt.ENUM`
       biking
@@ -788,21 +789,40 @@ describe("Struct", () => {
       Address->cage: String
       Hobby: !DELETE
       Address: !DELETE
-    `
+    `;
 
     const Bird = Animal({
-      name: 'Birdie',
-      age: '1',
-      birthday: '2018-03-08',
-      Hobby: 'Flying',
-      Address: 'Jakarta'
-    })
+      name: "Birdie",
+      age: "1",
+      birthday: "2018-03-08",
+      Hobby: "Flying",
+      Address: "Jakarta"
+    });
 
     expect(Bird.j()).to.deep.equals({
-      name: 'Birdie',
+      name: "Birdie",
       age: 1,
-      birthday: '2018-03-08T00:00:00.000Z',
-      cage: 'Jakarta'
+      birthday: "2018-03-08T00:00:00.000Z",
+      cage: "Jakarta"
     });
+  });
+  it("should be able to initiate array as jkt object", () => {
+    const Person = jkt`
+      name: String
+      age: Number
+      birthday: DatePlain
+    `;
+
+    const People = jkt.array(Person);
+
+    const Audience = People([
+      { name: "Aditya", age: "27", birthday: "1991-06-18" },
+      { name: "James Dun", age: "31", birthday: "1989-11-12" }
+    ]);
+
+    expect(Audience.j()).to.deep.equals([
+      { name: "Aditya", age: 27, birthday: "1991-06-18T00:00:00.000Z" },
+      { name: "James Dun", age: 31, birthday: "1989-11-12T00:00:00.000Z" }
+    ]);
   });
 });
