@@ -412,7 +412,6 @@ describe("Struct", () => {
       ]
     });
 
-    console.log(groupOfCountry.j());
     expect(groupOfCountry.j()).to.deep.equal({
       country: "Indonesia",
       fruits: [],

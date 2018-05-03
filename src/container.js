@@ -41,18 +41,7 @@ const arrayContainer = (value, strictNull = false, defaultToArray = false) => {
   };
 
   const obj = function(valueToParse) {
-    // const __id = utils.generator.generateId();
-    // const { Inst } = require("./index");
-    // const inst = Inst(
-    //   __id,
-    //   value.dirtySchema,
-    //   utils.makeUtils(value.dirtySchema)
-    // );
-    // return inst(value);
-    // return parse(utilParser.valueParser, valueToParse);
     const parsed = parse(utilParser.valueParser, valueToParse);
-    console.log(value);
-    console.log(parsed);
     const util = utils.makeUtils(value.schema);
     Object.assign(parsed, {
       j: () => util.serialize(parsed),
