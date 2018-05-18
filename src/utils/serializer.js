@@ -34,26 +34,34 @@ const purified = obj => {
   }
 };
 
+const valueSerializer = (baseSchema, parsedValues) => {
+  const serializedValues = {};
+  Object.keys(baseSchema).forEach(key => {
+    const valueType = baseSchema[key];
+
+    const [srcKey, mapKey] = extractMapKey(key);
+    if (mapKey !== null) key = mapKey;
+
+    const value = parsedValues[key];
+    if (!detector.isUndefined(value))
+      if (isSafeToRelease(valueType)) {
+        serializedValues[key] = safeSerializer[valueType](value);
+      } else {
+        const purifiedVal = purified(value);
+        if (!detector.isUndefined(purifiedVal))
+          serializedValues[key] = purifiedVal;
+      }
+  });
+  return serializedValues;
+};
+
 const serialize = baseSchema => {
   return parsedValues => {
-    const serializedValues = {};
-    Object.keys(baseSchema).forEach(key => {
-      const valueType = baseSchema[key];
-
-      const [srcKey, mapKey] = extractMapKey(key);
-      if (mapKey !== null) key = mapKey;
-
-      const value = parsedValues[key];
-      if (!detector.isUndefined(value))
-        if (isSafeToRelease(valueType)) {
-          serializedValues[key] = safeSerializer[valueType](value);
-        } else {
-          const purifiedVal = purified(value);
-          if (!detector.isUndefined(purifiedVal))
-            serializedValues[key] = purifiedVal;
-        }
-    });
-    return serializedValues;
+    if (detector.isArray(parsedValues)) {
+      return parsedValues.map(v => valueSerializer(baseSchema, v));
+    } else {
+      return valueSerializer(baseSchema, parsedValues);
+    }
   };
 };
 

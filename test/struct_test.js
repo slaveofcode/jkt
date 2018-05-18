@@ -323,7 +323,7 @@ describe("Struct", () => {
     const countryGroup = jkt`
       country: String
       groupOfPeople: ${people}
-      fruits: ${jkt.c.arr(fruit)}
+      fruits: ${jkt.c.arr(fruit, false, true)}
     `;
 
     const peopleStrict = jkt`
@@ -434,18 +434,18 @@ describe("Struct", () => {
   });
   it("should be able to handle values with various predefined-value", () => {
     const aditya = jkt`
-      name: ${'Aditya'}
+      name: ${"Aditya"}
       age: ${25}
       birthday: ${new Date()}
       money: ${324432.23}
-      cards: ${['somecard', 'credit card', 'debit card']}
-      object: ${{name: 'dummy', example: 'just example'}}
+      cards: ${["somecard", "credit card", "debit card"]}
+      object: ${{ name: "dummy", example: "just example" }}
       nullval: ${null}
       introvert: ${true}
       ability: ${say => `hello ${say}`}
-      symbol: ${Symbol('something')}
+      symbol: ${Symbol("something")}
     `;
-  })
+  });
   it("should be able to create struct with enum", () => {
     const hobby = jkt.ENUM`
       biking
@@ -788,21 +788,98 @@ describe("Struct", () => {
       Address->cage: String
       Hobby: !DELETE
       Address: !DELETE
-    `
+    `;
 
     const Bird = Animal({
-      name: 'Birdie',
-      age: '1',
-      birthday: '2018-03-08',
-      Hobby: 'Flying',
-      Address: 'Jakarta'
-    })
+      name: "Birdie",
+      age: "1",
+      birthday: "2018-03-08",
+      Hobby: "Flying",
+      Address: "Jakarta"
+    });
 
     expect(Bird.j()).to.deep.equals({
-      name: 'Birdie',
+      name: "Birdie",
       age: 1,
-      birthday: '2018-03-08T00:00:00.000Z',
-      cage: 'Jakarta'
+      birthday: "2018-03-08T00:00:00.000Z",
+      cage: "Jakarta"
     });
+  });
+  it("should be able to initiate array as jkt object", () => {
+
+    const Hobby = jkt`
+      name: String
+      cost: Number
+    `;
+
+    const Person = jkt`
+      name: String
+      age: Number
+      birthday: DatePlain
+    `;
+
+    const PersonWithHobby = Person`
+      hobby: ${Hobby}
+    `;
+
+    const People = jkt.array(Person);
+    const PeopleWithHobby = jkt.array(PersonWithHobby)
+
+    const MusicEvent = jkt`
+      location: String
+      name: String
+      people: ${People}
+    `;
+
+    const Audience = People([
+      { name: "Aditya", age: "27", birthday: "1991-06-18" },
+      { name: "James Dun", age: "31", birthday: "1989-11-12" }
+    ]);
+
+    const Hobbyist = PeopleWithHobby([
+      { name: "Aditya", age: "27", birthday: "1991-06-18", hobby: { name: 'Programming', cost: 0 } },
+      { name: "Amelia", age: "26", birthday: "1992-05-31", hobby: { name: 'Shopping', cost: '3131310' } },
+      { name: "John", age: "40", birthday: "1986-09-15" },
+    ])
+
+    const RockMusicEvent = MusicEvent({
+      location: 'jakarta',
+      name: 'Metallica Concert',
+      people: [
+        { name: "Aditya", age: "27", birthday: "1991-06-18" },
+        { name: "James Dun", age: "31", birthday: "1989-11-12" }
+      ]
+    });
+
+    const NoMusicEvent = MusicEvent({
+      location: 'jakarta',
+      name: 'Unknown',
+    });
+
+    expect(Audience.j()).to.deep.equals([
+      { name: "Aditya", age: 27, birthday: "1991-06-18T00:00:00.000Z" },
+      { name: "James Dun", age: 31, birthday: "1989-11-12T00:00:00.000Z" }
+    ]);
+
+    expect(Hobbyist.j()).to.deep.equals([
+      { name: "Aditya", age: 27, birthday: "1991-06-18T00:00:00.000Z", hobby: { name: 'Programming', cost: 0 } },
+      { name: "Amelia", age: 26, birthday: "1992-05-31T00:00:00.000Z", hobby: { name: 'Shopping', cost: 3131310 } },
+      { name: "John", age: 40, birthday: "1986-09-15T00:00:00.000Z", hobby: { name: null, cost: null } },
+    ]);
+
+    expect(RockMusicEvent.j()).to.deep.equals({
+      location: 'jakarta',
+      name: 'Metallica Concert',
+      people: [
+        { name: "Aditya", age: 27, birthday: "1991-06-18T00:00:00.000Z" },
+        { name: "James Dun", age: 31, birthday: "1989-11-12T00:00:00.000Z" }
+      ]
+    })
+    
+    expect(NoMusicEvent.j()).to.deep.equals({
+      location: 'jakarta',
+      name: 'Unknown',
+      people: null
+    })
   });
 });
