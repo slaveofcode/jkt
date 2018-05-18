@@ -851,6 +851,11 @@ describe("Struct", () => {
       ]
     });
 
+    const NoMusicEvent = MusicEvent({
+      location: 'jakarta',
+      name: 'Unknown',
+    });
+
     expect(Audience.j()).to.deep.equals([
       { name: "Aditya", age: 27, birthday: "1991-06-18T00:00:00.000Z" },
       { name: "James Dun", age: 31, birthday: "1989-11-12T00:00:00.000Z" }
@@ -869,6 +874,12 @@ describe("Struct", () => {
         { name: "Aditya", age: 27, birthday: "1991-06-18T00:00:00.000Z" },
         { name: "James Dun", age: 31, birthday: "1989-11-12T00:00:00.000Z" }
       ]
+    })
+    
+    expect(NoMusicEvent.j()).to.deep.equals({
+      location: 'jakarta',
+      name: 'Unknown',
+      people: null
     })
   });
 });
