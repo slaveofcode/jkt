@@ -425,8 +425,25 @@ const Person = jkt`
 const SchoolClass = jkt`
   name: String
   grade: Number
-  students: ${jkt.c.arr(Person)}
+  students: ${jkt.c.array(Person)}
 `
+
+const strictNull = false  // if some value has null, the item will not added into list
+const defaultToArray = true // set default value to array ( not null )
+const People = jkt.array(Person, strictNull, defaultToArray)
+
+const listOfPeople = People([
+  {
+    name: 'Aditya',
+    age: '27',
+    birthday: '1991-06-18',
+  },
+  {
+    name: 'John',
+    age: '20',
+    birthday: '1996-10-04',
+  },
+])
 ```
 
 **[> See the result on RunKit](https://runkit.com/zeandcode/array-container)**
