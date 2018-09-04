@@ -4,6 +4,7 @@
 
 Simple helper to parse your JSON.
 
+**UPDATE:** Take a look at `Podeng` a similar parser like JKT with richer features, go [visit the project here](https://github.com/slaveofcode/podeng) 
 <!-- TOC -->
 
 * [JKT Parser](#jkt-parser)

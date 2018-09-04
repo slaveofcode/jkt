@@ -62,7 +62,7 @@ const parser = {
   [FUNCTION]: val => (detector.isFunction(val) ? val : null),
   [NUMBER]: val => {
     if (detector.isNumber(val)) return val
-    if (!isNaN(val)) {
+    if (val && !isNaN(val)) {
       return detector.isStringFloat(val) ? parseFloat(val) : parseInt(val)
     }
     return null
@@ -80,7 +80,7 @@ const nonNullableChecker = {
     detector.isDate(val) || validDateFromString(val, false) !== null,
   [FUNCTION_ONLY]: val => detector.isFunction(val),
   [NUMBER_ONLY]: val => {
-    if (!isNaN(val)) {
+    if (val && !isNaN(val)) {
       return detector.isStringFloat(val) ? parseFloat(val) : parseInt(val)
     }
 
