@@ -927,4 +927,11 @@ describe('Struct', () => {
       date: '2018-06-18T00:00:00.000Z'
     })
   })
+  it('should npt show NaN value for Number type with null value', () => {
+    const Obj = jkt`
+      SomeValue: Number
+    `;
+
+    expect(Obj({SomeValue: null}).j()).to.deep.equals({ SomeValue: null });
+  });
 })
