@@ -109,7 +109,7 @@ const valueParser = (schema, valuesToParse) => {
     const [srcKey, mapKey] = extractMapKey(key)
     if (mapKey !== null) key = mapKey
 
-    const value = detector.isUndefined(valuesToParse)
+    const value = (detector.isUndefined(valuesToParse) || detector.isNull(valuesToParse))
       ? valuesToParse
       : valuesToParse[srcKey !== null ? srcKey : key]
 
