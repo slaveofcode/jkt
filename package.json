@@ -1,6 +1,6 @@
 {
   "name": "jkt",
-  "version": "2.3.7",
+  "version": "2.3.8",
   "description": "Simple and efficient library for JSON data structure",
   "main": "./src/index.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "mocha": "^7.1.1"
   },
   "dependencies": {
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "moment": "^2.24.0",
     "shortid": "^2.2.14"
   }
